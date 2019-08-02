@@ -12,6 +12,7 @@ const app = express();
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+const signInRouter = require("./routes/sign-in");
 
 const url = process.env.DATABASE_URL || "mongodb://localhost:27017/news";
 mongoose.connect(url, { useNewUrlParser: true });
@@ -32,9 +33,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(
+  session({ secret: "secret", resave: false, saveUninitialized: true })
+);
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+passportConfig();
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/sign-in", signInRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
