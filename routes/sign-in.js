@@ -9,4 +9,16 @@ router.get("/", function(req, res, next) {
   res.render("sign-in", { title: "로그인 페이지", errorMessage });
 });
 
+/* local signIn. */
+router.post(
+  "/",
+  passport.authenticate("local", {
+    failureRedirect: "/sign-in",
+    failureFlash: true
+  }),
+  function(req, res) {
+    res.redirect("/");
+  }
+);
+
 module.exports = router;
