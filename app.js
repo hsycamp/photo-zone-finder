@@ -8,14 +8,14 @@ const passport = require("passport");
 const passportConfig = require("./models/passport");
 const flash = require("connect-flash");
 const mongoose = require("mongoose");
+const config = require('./config')
 const app = express();
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const signInRouter = require("./routes/sign-in");
 
-const url = process.env.DATABASE_URL || "mongodb://localhost:27017/news";
-mongoose.connect(url, { useNewUrlParser: true });
+mongoose.connect(config.mongodbUri, { useNewUrlParser: true });
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error:"));
@@ -28,6 +28,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 app.use(logger("dev"));
+app.set('jwt-secret', config.secret)
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
