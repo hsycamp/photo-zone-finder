@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  div= errorMessage
+  form.sign-up-form(action='/users/local' method='POST')
+    div.form-group
+      input#id(type='text' name='id' placeholder='아이디를 입력하세요' required='')
+    div.form-group
+      input#password(type='password' name='password' placeholder='비밀번호를 입력하세요' required='')
+    button#sign-up-btn(type='submit') 가입완료
+  button#sign-up-btn(onclick="location.href='/sign-in'") 뒤로가기

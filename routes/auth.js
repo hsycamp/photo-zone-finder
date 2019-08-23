@@ -6,7 +6,7 @@ const SECRET = "token_secret";
 
 /* local signIn. */
 router.post("/local", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("sign-in", (err, user, info) => {
     if (err) return res.json(401, error);
     if (info) {
       req.flash("message", info.message);
