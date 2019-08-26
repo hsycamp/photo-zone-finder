@@ -16,7 +16,8 @@ module.exports = () => {
           if (!user) {
             return done(null, false, { message: "존재하지 않는 아이디입니다" });
           }
-          if (!user.checkPassword(password)) {
+          const validPassword = await user.checkPassword(password);
+          if (!validPassword) {
             return done(null, false, { message: "비밀번호가 틀렸습니다" });
           }
           return done(null, user);

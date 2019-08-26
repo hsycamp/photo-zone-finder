@@ -13,7 +13,7 @@ userSchema.pre("save", async function(next) {
 });
 
 userSchema.methods.checkPassword = async function(inputPassword) {
-  const checkResult = await bcrypt.compare(this.password, inputPassword);
+  const checkResult = await bcrypt.compare(inputPassword,this.password);
   return checkResult;
 };
 

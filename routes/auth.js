@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const SECRET = "token_secret";
+const config = require("../config");
 
 /* local signIn. */
 router.post("/local", (req, res, next) => {
@@ -16,7 +16,7 @@ router.post("/local", (req, res, next) => {
       if (err) {
         res.send(err);
       }
-      const token = jwt.sign({ id: user.id }, SECRET, {
+      const token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: "7d"
       });
       console.log(token);
