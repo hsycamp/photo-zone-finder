@@ -6,23 +6,35 @@ const config = require("../config");
 
 /* local signIn. */
 router.post("/local", (req, res, next) => {
-  passport.authenticate("sign-in", (err, user, info) => {
-    if (err) return res.json(401, error);
-    if (info) {
-      req.flash("message", info.message);
-      return res.status(401).redirect("/sign-in");
-    }
-    req.login(user, { session: false }, err => {
-      if (err) {
-        res.send(err);
+  passport.authenticate(
+    "sign-in",
+    {
+      session: false
+    },
+    async (err, user, info) => {
+      try {
+        if (err) return res.json(401, error);
+        if (info) {
+          req.flash("message", info.message);
+          return res.status(401).redirect("/sign-in");
+        }
+        req.login(user, { session: false }, async err => {
+          if (err) return next(err);
+          const token = jwt.sign({ id: user.id }, config.secret, {
+            expiresIn: "7d"
+          });
+          res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 10
+          });
+          console.log(token);
+          return res.redirect("/");
+        });
+      } catch (err) {
+        return next(err);
       }
-      const token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: "7d"
-      });
-      console.log(token);
-      return res.json({ access_token: token });
-    });
-  })(req, res, next);
+    }
+  )(req, res, next);
 });
 
 module.exports = router;
