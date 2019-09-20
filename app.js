@@ -10,6 +10,7 @@ const flash = require("connect-flash");
 const mongoose = require("mongoose");
 const config = require("./config");
 const app = express();
+const checkJwt = require("./routes/check-jwt")
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -47,7 +48,7 @@ app.use(
 );
 app.use(flash());
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(checkJwt());
 passportConfig();
 
 app.use("/", indexRouter);
