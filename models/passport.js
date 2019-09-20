@@ -1,6 +1,9 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const Users = require("./user");
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+const config = require("../config");
 
 module.exports = () => {
   passport.use(
@@ -44,6 +47,23 @@ module.exports = () => {
           return done(null, user);
         } catch (error) {
           return done(error);
+        }
+      }
+    )
+  );
+
+  passport.use(
+    "jwt",
+    new JwtStrategy(
+      {
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: config.secret
+      },
+      async (token, done) => {
+        try {
+          return done(null, token);
+        } catch (error) {
+          done(error);
         }
       }
     )
