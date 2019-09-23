@@ -37,4 +37,9 @@ router.post("/local", (req, res, next) => {
   )(req, res, next);
 });
 
+router.post("/sign-out", (req, res, next) => {
+  res.clearCookie("token", { path: "/" });
+  return res.redirect("/sign-in");
+});
+
 module.exports = router;
