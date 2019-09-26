@@ -5,12 +5,12 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
 const passport = require("passport");
-const passportConfig = require("./models/passport");
+const passportConfig = require("./auth/passport");
 const flash = require("connect-flash");
 const mongoose = require("mongoose");
 const config = require("./config");
 const app = express();
-const checkJwt = require("./routes/check-jwt")
+const checkJwt = require("./auth/check-jwt")
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
