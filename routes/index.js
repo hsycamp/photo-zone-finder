@@ -1,20 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const indexController = require("../controller/index-controller");
 
 /* GET home page. */
-router.get("/", (req, res, next) => {
-  res.render("index", { title: "Express" });
-});
+router.get("/", indexController.getIndexPage);
 
 /* GET signIn page. */
-router.get("/sign-in", (req, res, next) => {
-  const flashMessage = req.flash('message');
-  res.render("sign-in", { title: "로그인 페이지", errorMessage: flashMessage });
-});
+router.get("/sign-in", indexController.getSignInPage);
 
 /* GET signUP page. */
-router.get("/sign-up", (req, res, next) => {
-  const flashMessage = req.flash('message');
-  res.render("sign-up", { title: "회원가입 페이지", errorMessage: flashMessage });
-});
+router.get("/sign-up", indexController.getSignUpPage);
+
 module.exports = router;
