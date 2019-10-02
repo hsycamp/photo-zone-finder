@@ -1,6 +1,4 @@
 const jwt = require("jsonwebtoken");
-const config = require("../config");
-
 const checkJwt = () => async (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
@@ -9,7 +7,7 @@ const checkJwt = () => async (req, res, next) => {
   }
 
   try {
-    const decodedToken = await jwt.verify(token, config.secret);
+    const decodedToken = await jwt.verify(token, process.env.SECRET);
     req.user = decodedToken.id;
     return next();
   } catch (error) {

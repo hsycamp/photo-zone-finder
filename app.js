@@ -8,7 +8,7 @@ const passport = require("passport");
 const passportConfig = require("./auth/passport");
 const flash = require("connect-flash");
 const mongoose = require("mongoose");
-const config = require("./config");
+require('dotenv').config();
 const app = express();
 const checkJwt = require("./auth/check-jwt")
 
@@ -16,7 +16,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
 
-mongoose.connect(config.mongodbUri, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error:"));
@@ -29,7 +29,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 app.use(logger("dev"));
-app.set("jwt-secret", config.secret);
+app.set("jwt-secret", process.env.SECRET);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   session({
-    secret: "secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {

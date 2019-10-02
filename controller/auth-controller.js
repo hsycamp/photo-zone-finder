@@ -1,6 +1,5 @@
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const config = require("../config");
 
 const authController = {
   signIn: (req, res, next) => {
@@ -18,7 +17,7 @@ const authController = {
           }
           req.login(user, { session: false }, async err => {
             if (err) return next(err);
-            const token = jwt.sign({ id: user.id }, config.secret, {
+            const token = jwt.sign({ id: user.id }, process.env.SECRET, {
               expiresIn: "7d"
             });
             res.cookie("token", token, {
