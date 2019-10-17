@@ -2,9 +2,10 @@ extends layout
 
 block content
 
-  div.ui.middle.aligned.center.aligned.grid(style="padding-top:200px")
+  div.ui.middle.aligned.center.aligned.grid(style="padding-top:100px")
     div.cloumn(style="width: 400px")
         h2.ui.teal.header(style="text-align:center")
+            img(src="/images/camera-black.svg",style="width:100px;height:100px;margin-bottom:15px")
             div.content(style="font-size:40px;color:#000000") Photo Zone Finder
             div.content(style="padding-top:10px;font-size:20px;color:#9CA2A6") 나만의 포토존을 공유해보세요.
         form.ui.large.form(action="/auth/local" method="POST")
