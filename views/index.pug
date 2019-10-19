@@ -2,14 +2,4 @@ extends layout
 
 block content
 
-  div.ui.fixed.inverted.menu
-    div.ui.container
-      a.header.item(href="/")
-        img.logo(src="/images/camera.svg", style="margin-right:1.5em")
-        = "Photo Zone Finder"
-      div.right.ui.simple.dropdown.item(style="font-size: 1.2em")
-        i.user.icon
-        div.menu
-          div.item #{user}
-          form#sign-out-form(action="/auth/sign-out", method="POST",style="display:none")
-          div.item(onclick="event.preventDefault();document.getElementById('sign-out-form').submit()") 로그아웃
+  include header
