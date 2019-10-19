@@ -8,9 +8,10 @@ const passport = require("passport");
 const passportConfig = require("./auth/passport");
 const flash = require("connect-flash");
 const mongoose = require("mongoose");
-require('dotenv').config();
+const AWS = require("aws-sdk");
+require("dotenv").config();
 const app = express();
-const checkJwt = require("./auth/check-jwt")
+const checkJwt = require("./auth/check-jwt");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -50,6 +51,11 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(checkJwt());
 passportConfig();
+
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+});
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
