@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const postSchema = require("./post").schema;
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
@@ -6,7 +7,8 @@ const userSchema = new mongoose.Schema({
   password: String,
   auth: {
     googleId: String
-  }
+  },
+  posts: [postSchema]
 });
 
 userSchema.pre("save", async function(next) {
