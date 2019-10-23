@@ -1,8 +1,19 @@
+const User = require("../models/user");
+const Post = require("../models/post");
+
 const postController = {
-  uploadImage: (req, res, next) => {
+  uploadImage: async (req, res, next) => {
     try {
-      let payLoad = { url: req.file.location };
-      return res.json(200, payLoad);
+      const content = req.file.location;
+      const userId = req.user;
+      const user = await User.findOne({ id: userId });
+      const post = await Post.create({
+        content: content,
+        publisher: user
+      });
+      user.posts.push(post._id);
+      user.save();
+      return res.redirect("/");
     } catch (err) {
       next(err);
     }
