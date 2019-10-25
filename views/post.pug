@@ -1,0 +1,16 @@
+extends layout
+
+block content
+
+  include header
+  
+  div.ui.middle.aligned.center.aligned.grid
+    div.ui.container
+            form.ui.form(action="/post/img", method="POST", enctype="multipart/form-data",style="margin:100px")
+                div.field
+                    label 사진
+                    input(type="file", name="img")
+                div.field
+                    label 내용
+                    textarea(name="body",placeholder="문구입력...")
+                button.ui.inverted.blue.button(type="submit",style="margin-left:810px") 업로드
