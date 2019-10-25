@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   auth: {
     googleId: String
   },
-  posts: [postSchema]
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }]
 });
 
 userSchema.methods.checkPassword = async function(inputPassword) {
@@ -16,4 +16,4 @@ userSchema.methods.checkPassword = async function(inputPassword) {
   return checkResult;
 };
 
-module.exports = mongoose.model("users", userSchema);
+module.exports = mongoose.model("User", userSchema);
