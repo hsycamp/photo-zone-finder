@@ -21,6 +21,15 @@ const indexController = {
       errorMessage: flashMessage
     });
   },
+  getPostPage: (req, res) => {
+    const userId = req.user;
+    const flashMessage = req.flash("message");
+    res.render("post", {
+      title: "게시물 업로드 페이지",
+      user: { id: userId },
+      errorMessage: flashMessage
+    });
+  },
   getMyPage: async (req, res) => {
     const userId = req.user;
     const user = await User.findOne({ id: userId }).populate({
