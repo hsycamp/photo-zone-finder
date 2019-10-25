@@ -12,4 +12,7 @@ router.get("/sign-in", isNotLoggedIn, indexController.getSignInPage);
 /* GET signUP page. */
 router.get("/sign-up", isNotLoggedIn, indexController.getSignUpPage);
 
+/* GET my page */
+router.get("/my-page", isLoggedIn, indexController.getMyPage);
+
 module.exports = router;
