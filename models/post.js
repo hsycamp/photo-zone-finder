@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
 const UserSchema = require("./user");
+const commentSchema = require("./comment").schema
 
-const postSchema = mongoose.Schema({
+const postSchema = new mongoose.Schema({
   content: String,
   publisher: UserSchema,
   publishedDate: { type: Date, default: Date.now },
-  likes: Number,
-  comments: String
+  likes: { type: Number, default: 0 },
+  comments: [commentSchema]
 });
 
-module.exports = mongoose.model("post", postSchema);
+module.exports = mongoose.model("Post", postSchema);
