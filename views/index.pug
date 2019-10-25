@@ -3,3 +3,8 @@ extends layout
 block content
 
   include header
+
+  .ui.three.column.grid(style="width: 70%;padding-top:200px;margin: 0 auto")
+    for post in posts
+      .column
+        include card

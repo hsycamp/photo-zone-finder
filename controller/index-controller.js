@@ -1,9 +1,11 @@
+const Post = require("../models/post");
 const User = require("../models/user");
 
 const indexController = {
-  getIndexPage: (req, res) => {
+  getIndexPage: async (req, res) => {
     const userId = req.user;
-    res.render("index", { user: userId });
+    const posts = await Post.find();
+    res.render("index", { user: { id: userId }, posts: posts });
   },
   getSignInPage: (req, res) => {
     const flashMessage = req.flash("message");
