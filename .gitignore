@@ -61,4 +61,4 @@ typings/
 .next
 
 # debug tool
-.vscode
+.vscode/
