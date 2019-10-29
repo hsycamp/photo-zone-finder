@@ -9,6 +9,7 @@ const postController = {
       const user = await User.findOne({ id: userId });
       const post = await Post.create({
         content: content,
+        text:req.body.text,
         publisher: user
       });
       user.posts.push(post._id);

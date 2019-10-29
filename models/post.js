@@ -4,6 +4,7 @@ const commentSchema = require("./comment").schema
 
 const postSchema = new mongoose.Schema({
   content: String,
+  text:String,
   publisher: UserSchema,
   publishedDate: { type: Date, default: Date.now },
   likes: { type: Number, default: 0 },
