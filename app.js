@@ -18,6 +18,7 @@ const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
 const detailRouter = require("./routes/detail");
+const commentRouter = require("./routes/comment");
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 const db = mongoose.connection;
@@ -64,6 +65,7 @@ app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
 app.use("/detail", detailRouter);
+app.use("/comment", commentRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
