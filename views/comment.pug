@@ -1,0 +1,12 @@
+
+if post.comments
+    .ui.comments
+        for comment in post.comments
+            .comment
+                a.avatar
+                    img(src='/images/avatar.png')
+                .content
+                    a.author
+                        | #{comment.publisher}
+                    .text
+                        | #{comment.content}

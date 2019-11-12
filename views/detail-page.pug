@@ -8,23 +8,19 @@ block content
     .ui.container(style="width:1000px")
       .image(style="width:65%;height:100%;float:left;margin-right:1%")
         img.ui.big.image(src=`${post.content}`,style="width:100%")
-      .ui.card(style="margin-top:0;width:34%;height:100%;float:left")
+      .ui.card(style="margin-top:0;width:34%;height:600px;float:left")
         .content(style="height:10%")
             img.ui.avatar.image(src="/images/avatar.png")
             |  #{post.publisher.id}
-        .content(style="height:70%")
+        .content(style="height:20%")
             |  #{post.text}
-        .content
+        .content(style="height:50%;overflow:auto")
+          include comment
+        .content(style="height:10%")
           i.heart.outline.like.icon
           |   좋아요 3개
-        .extra.content
+        .extra.content(style="height:10%")
           .ui.large.transparent.input
-            input(type='text' placeholder='댓글 달기...')
+            input#comment(type='text', name='text' placeholder='댓글 달기...')
 
-  
-  
-
-
-    
-
-
+  script(src='/javascripts/comment.js')
