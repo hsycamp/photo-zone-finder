@@ -8,6 +8,7 @@ const CommentHandler = class {
     this.commentBox.addEventListener("keypress", async event => {
       if (event.keyCode === 13) {
         const text = this.commentBox.value;
+        if (!text) return this.commentBox.focus();
         const postNumber = window.location.pathname.substring(8);
         const inputData = {
           text,
@@ -47,7 +48,7 @@ const CommentHandler = class {
         }
       });
       const result = await response.json();
-      return result
+      return result;
     };
     return { addComment };
   }
