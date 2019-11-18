@@ -1,12 +1,16 @@
 
-if post.comments
+if comments
     .ui.comments
-        for comment in post.comments
-            .comment
-                a.avatar
-                    img(src='/images/avatar.png')
-                .content
-                    a.author
-                        | #{comment.publisher}
-                    .text
-                        | #{comment.content}
+        for comment in comments
+            if comment.display === true
+                .comment
+                    a.avatar
+                        img(src='/images/avatar.png')
+                    .content
+                        a.author
+                            | #{comment.publisher}
+                        if comment.publisher === user.id 
+                            span.right.floated
+                                i.trash.icon
+                        .text
+                            | #{comment.content}

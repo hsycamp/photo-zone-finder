@@ -9,10 +9,10 @@ const CommentHandler = class {
       if (event.keyCode === 13) {
         const text = this.commentBox.value;
         if (!text) return this.commentBox.focus();
-        const postNumber = window.location.pathname.substring(8);
+        const postId = window.location.pathname.substring(8);
         const inputData = {
           text,
-          postNumber
+          postId
         };
         const newCommentData = await this.fetchData().addComment(
           JSON.stringify(inputData)
@@ -30,6 +30,9 @@ const CommentHandler = class {
       <a class="avatar"><img src="/images/avatar.png"></a>
       <div class="content">
         <a class="author">${newCommentData.publisher}</a>
+        <span class="right floated">
+          <i class="trash icon"></i>
+        </span>
         <div class="text">${newCommentData.content}</div>
       </div>
     </div>

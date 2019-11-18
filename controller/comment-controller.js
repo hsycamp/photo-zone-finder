@@ -4,15 +4,12 @@ const Comment = require("../models/comment");
 const commentController = {
   addComment: async (req, res) => {
     const user = req.user;
-    const { text, postNumber } = req.body;
-    const post = await Post.findById(postNumber);
+    const { text, postId } = req.body;
     const comment = await Comment.create({
+      postId,
       content: text,
       publisher: user
     });
-
-    post.comments.push(comment);
-    post.save();
 
     return res.json(comment);
   }
