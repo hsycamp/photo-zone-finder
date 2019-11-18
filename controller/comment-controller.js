@@ -12,6 +12,16 @@ const commentController = {
     });
 
     return res.json(comment);
+  },
+
+  deleteComment: async (req, res) => {
+    const commentId = req.params.commentId;
+    const comment = await Comment.findById(commentId);
+
+    comment.display = false;
+    comment.save();
+
+    return res.json("success");
   }
 };
 
