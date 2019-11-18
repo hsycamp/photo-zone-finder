@@ -2,6 +2,7 @@ const CommentHandler = class {
   constructor() {
     this.commentBoard = document.querySelector(".ui.comments");
     this.commentBox = document.querySelector("#comment");
+    this.deleteButtons = document.querySelectorAll(".trash.icon");
   }
 
   addCommentEvent() {
@@ -20,13 +21,19 @@ const CommentHandler = class {
         const newCommentElement = this.createCommentElement(newCommentData);
         this.commentBoard.insertAdjacentHTML("beforeend", newCommentElement);
         this.commentBox.value = "";
+        const newDeleteButton = document
+          .getElementById(newCommentData._id)
+          .querySelector(".trash.icon");
+        newDeleteButton.addEventListener("click", event => {
+          this.deleteCommentEvent(event);
+        });
       }
     });
   }
 
   createCommentElement(newCommentData) {
     const commentElement = `
-    <div class="comment">
+    <div class="comment" id="${newCommentData._id}">
       <a class="avatar"><img src="/images/avatar.png"></a>
       <div class="content">
         <a class="author">${newCommentData.publisher}</a>
@@ -38,6 +45,23 @@ const CommentHandler = class {
     </div>
     `;
     return commentElement;
+  }
+
+  async deleteCommentEvent(event) {
+    const commentId = event.target.parentNode.parentNode.parentNode.id;
+    const deleteResult = await this.fetchData().deleteComment(commentId);
+    if (deleteResult === "success") {
+      const targetComment = document.getElementById(commentId);
+      this.commentBoard.removeChild(targetComment);
+    }
+  }
+
+  addDeleteEvent() {
+    this.deleteButtons.forEach(button => {
+      button.addEventListener("click", event => {
+        this.deleteCommentEvent(event);
+      });
+    });
   }
 
   fetchData() {
@@ -53,11 +77,21 @@ const CommentHandler = class {
       const result = await response.json();
       return result;
     };
-    return { addComment };
+
+    const deleteComment = async commentId => {
+      const url = `/comment/${commentId}`;
+      const response = await fetch(url, {
+        method: "DELETE"
+      });
+      const result = await response.json();
+      return result;
+    };
+    return { addComment, deleteComment };
   }
 
   run() {
     this.addCommentEvent();
+    this.addDeleteEvent();
   }
 };
 

@@ -3,7 +3,7 @@ if comments
     .ui.comments
         for comment in comments
             if comment.display === true
-                .comment
+                .comment(id=comment._id)
                     a.avatar
                         img(src='/images/avatar.png')
                     .content
