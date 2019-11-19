@@ -38,7 +38,7 @@ const CommentHandler = class {
       <div class="content">
         <a class="author">${newCommentData.publisher}</a>
         <span class="right floated">
-          <i class="trash icon"></i>
+          <i class="trash icon" style="cursor:pointer"></i>
         </span>
         <div class="text">${newCommentData.content}</div>
       </div>
