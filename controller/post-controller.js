@@ -10,7 +10,7 @@ const postController = {
       const post = await Post.create({
         content: content,
         text: req.body.text,
-        publisher: user
+        publisher: userId
       });
       user.posts.push(post._id);
       user.save();
