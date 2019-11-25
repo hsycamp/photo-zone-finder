@@ -1,6 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const Users = require("../models/user");
+const User = require("../models/user");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const bcrypt = require("bcrypt");
@@ -15,7 +15,7 @@ module.exports = () => {
       },
       async (id, password, done) => {
         try {
-          const user = await Users.findOne({ id: id });
+          const user = await User.findUser(id);
           if (!user) {
             return done(null, false, { message: "존재하지 않는 아이디입니다" });
           }
@@ -39,12 +39,12 @@ module.exports = () => {
       },
       async (id, password, done) => {
         try {
-          const existId = await Users.findOne({ id: id });
+          const existId = await User.findUser(id);
           if (existId) {
             return done(null, false, { message: "이미 존재하는 아이디입니다" });
           }
           const hashedPassword = await bcrypt.hash(password, 10);
-          const user = await Users.create({ id: id, password: hashedPassword });
+          const user = await User.createUser(id, hashedPassword);
           return done(null, user);
         } catch (error) {
           return done(error);

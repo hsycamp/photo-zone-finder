@@ -6,15 +6,12 @@ const postController = {
     try {
       const content = req.file.location;
       const userId = req.user;
-      const user = await User.findOne({ id: userId });
-      const post = await Post.create({
-        content: content,
-        text: req.body.text,
-        publisher: userId
-      });
-      user.posts.push(post._id);
-      user.save();
-      return res.redirect("/");
+      const text = req.body.text;
+      const postData = { content, text, userId };
+      const post = await Post.createPost(postData);
+      await User.addPostId(userId, post._id);
+
+      return res.redirect(`/detail/${post._id}`);
     } catch (err) {
       next(err);
     }

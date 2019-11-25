@@ -5,21 +5,15 @@ const commentController = {
   addComment: async (req, res) => {
     const user = req.user;
     const { text, postId } = req.body;
-    const comment = await Comment.create({
-      postId,
-      content: text,
-      publisher: user
-    });
+    const commentData = { text, postId, user };
+    const newComment = await Comment.createComment(commentData);
 
-    return res.json(comment);
+    return res.json(newComment);
   },
 
   deleteComment: async (req, res) => {
     const commentId = req.params.commentId;
-    const comment = await Comment.findById(commentId);
-
-    comment.display = false;
-    comment.save();
+    await Comment.deleteComment(commentId);
 
     return res.json("success");
   }

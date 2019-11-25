@@ -4,7 +4,7 @@ const User = require("../models/user");
 const indexController = {
   getIndexPage: async (req, res) => {
     const userId = req.user;
-    const posts = await Post.find();
+    const posts = await Post.getAllPosts();
     res.render("index", { user: { id: userId }, posts: posts });
   },
   getSignInPage: (req, res) => {
@@ -32,13 +32,11 @@ const indexController = {
   },
   getMyPage: async (req, res) => {
     const userId = req.user;
-    const user = await User.findOne({ id: userId }).populate({
-      path: "posts"
-    });
+    const userData = await User.getUserData(userId);
     const flashMessage = req.flash("message");
     res.render("my-page", {
       title: "마이 페이지",
-      user: user,
+      user: userData,
       errorMessage: flashMessage
     });
   }

@@ -20,7 +20,11 @@ const postRouter = require("./routes/post");
 const detailRouter = require("./routes/detail");
 const commentRouter = require("./routes/comment");
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+});
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error:"));
