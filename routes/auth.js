@@ -1,14 +1,19 @@
 const express = require("express");
 const router = express.Router();
+const { isLoggedIn, isNotLoggedIn } = require("../auth/auth");
 const authController = require("../controller/auth-controller");
 
 /* local signIn. */
-router.post("/local", authController.signIn);
+router.post("/local", isNotLoggedIn, authController.signIn);
 
-router.get("/google", authController.googleSignIn);
+router.get("/google", isNotLoggedIn, authController.googleSignIn);
 
-router.get("/google/callback", authController.googleSignInCallback);
+router.get(
+  "/google/callback",
+  isNotLoggedIn,
+  authController.googleSignInCallback
+);
 
-router.post("/sign-out", authController.signOut);
+router.post("/sign-out", isLoggedIn, authController.signOut);
 
 module.exports = router;
