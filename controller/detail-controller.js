@@ -12,6 +12,12 @@ const detailController = {
       post,
       comments
     });
+  },
+
+  deletePost: async (req, res) => {
+    const postId = req.params.postId;
+    await Post.deletePost(postId);
+    return res.json("success");
   }
 };
 

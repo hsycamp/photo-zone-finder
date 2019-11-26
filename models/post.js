@@ -31,4 +31,8 @@ postSchema.statics.getPostByPostId = async function(postId) {
   return post;
 };
 
+postSchema.statics.deletePost = async function(postId) {
+  await this.updateOne({ _id: postId }, { display: false });
+};
+
 module.exports = mongoose.model("Post", postSchema);

@@ -4,5 +4,6 @@ const { isLoggedIn } = require("../auth/auth");
 const detailController = require("../controller/detail-controller");
 
 router.get("/:postId", isLoggedIn, detailController.getDetailPage);
+router.delete("/:postId", isLoggedIn, detailController.deletePost);
 
 module.exports = router;
