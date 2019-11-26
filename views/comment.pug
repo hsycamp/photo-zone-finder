@@ -7,7 +7,7 @@ if comments
                     a.avatar
                         img(src='/images/avatar.png')
                     .content
-                        a.author
+                        a.author(href=`/user-page/${comment.publisher}`)
                             | #{comment.publisher}
                         if comment.publisher === user.id 
                             span.right.floated

@@ -36,7 +36,7 @@ const CommentHandler = class {
     <div class="comment" id="${newCommentData._id}">
       <a class="avatar"><img src="/images/avatar.png"></a>
       <div class="content">
-        <a class="author">${newCommentData.publisher}</a>
+        <a class="author" href="/user-page/${newCommentData.publisher}">${newCommentData.publisher}</a>
         <span class="right floated">
           <i class="trash icon" style="cursor:pointer"></i>
         </span>
