@@ -11,6 +11,6 @@ if comments
                             | #{comment.publisher}
                         if comment.publisher === user.id 
                             span.right.floated
-                                i.trash.icon(style="cursor:pointer")
+                                i#comment-delete-btn.trash.icon(style="cursor:pointer")
                         .text
                             | #{comment.content}

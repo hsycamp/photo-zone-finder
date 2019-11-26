@@ -2,7 +2,7 @@ const CommentHandler = class {
   constructor() {
     this.commentBoard = document.querySelector(".ui.comments");
     this.commentBox = document.querySelector("#comment");
-    this.deleteButtons = document.querySelectorAll(".trash.icon");
+    this.deleteButtons = document.querySelectorAll("#comment-delete-btn");
   }
 
   addCommentEvent() {
@@ -23,7 +23,7 @@ const CommentHandler = class {
         this.commentBox.value = "";
         const newDeleteButton = document
           .getElementById(newCommentData._id)
-          .querySelector(".trash.icon");
+          .querySelector("#comment-delete-btn");
         newDeleteButton.addEventListener("click", event => {
           this.deleteCommentEvent(event);
         });
@@ -38,7 +38,7 @@ const CommentHandler = class {
       <div class="content">
         <a class="author" href="/user-page/${newCommentData.publisher}">${newCommentData.publisher}</a>
         <span class="right floated">
-          <i class="trash icon" style="cursor:pointer"></i>
+          <i class="trash icon" id="comment-delete-btn" style="cursor:pointer"></i>
         </span>
         <div class="text">${newCommentData.content}</div>
       </div>
