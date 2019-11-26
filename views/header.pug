@@ -7,6 +7,6 @@
     .right.ui.simple.dropdown.item(style="font-size: 1.2em")
       i.user.icon
       .menu
-        a.item(href="/my-page") #{user.id}
+        a.item(href=`/user-page/${user.id}`) #{user.id}
         form#sign-out-form(action="/auth/sign-out", method="POST",style="display:none")
         .item(onclick="event.preventDefault();document.getElementById('sign-out-form').submit()") 로그아웃

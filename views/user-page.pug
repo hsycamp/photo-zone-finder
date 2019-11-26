@@ -6,12 +6,13 @@ block content
   
   .ui.center.aligned.grid(style="padding-top:150px")
     .cloumn(style="width: 600px")
-      a.ui.basic.button(href="/post",style="margin-top:10px; height : 40px ;width:100%")
-        i.camera.icon
-        span 업로드
+      if publisherData.id === user.id
+        a.ui.basic.button(href="/post",style="margin-top:10px; height : 40px ;width:100%")
+          i.camera.icon
+          span 업로드
   
   .ui.three.column.grid(style="width: 70%;padding-top:100px;margin: 0 auto")
-    if user.posts
-      for post in user.posts
+    if publisherData.posts
+      for post in publisherData.posts
         .column
           include card

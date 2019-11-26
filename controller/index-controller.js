@@ -30,13 +30,15 @@ const indexController = {
       errorMessage: flashMessage
     });
   },
-  getMyPage: async (req, res) => {
+  getUserPage: async (req, res) => {
     const userId = req.user;
-    const userData = await User.getUserData(userId);
+    const publisherId = req.params.publisherId;
+    const publisherData = await User.getUserData(publisherId);
     const flashMessage = req.flash("message");
-    res.render("my-page", {
-      title: "마이 페이지",
-      user: userData,
+    res.render("user-page", {
+      title: "유저 페이지",
+      user: { id: userId },
+      publisherData,
       errorMessage: flashMessage
     });
   }
