@@ -15,6 +15,7 @@ block content
             |  #{post.publisher}
           if post.publisher === user.id
             span.right.floated
+              i#post-update-btn.edit.icon(style="cursor:pointer")
               i#post-delete-btn.trash.icon(style="cursor:pointer")
         .content(style="height:20%;overflow:auto")
           |  #{post.text}

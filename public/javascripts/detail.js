@@ -1,15 +1,22 @@
 const DetailHandler = class {
   constructor() {
     this.userId = document.querySelector("#user-id").innerText;
+    this.updateButton = document.querySelector("#post-update-btn");
     this.deleteButton = document.querySelector("#post-delete-btn");
+    this.postId = window.location.pathname.substring(8);
   }
 
   async deletePostEvent() {
-    const postId = window.location.pathname.substring(8);
-    const deleteResult = await this.fetchData().deletePost(postId);
+    const deleteResult = await this.fetchData().deletePost(this.postId);
     if (deleteResult === "success") {
       location.href = `/user-page/${this.userId}`;
     }
+  }
+
+  addGetUpdatePageEvent() {
+    this.updateButton.addEventListener("click", () => {
+      location.href = `/detail/update/${this.postId}`;
+    });
   }
 
   addDeleteEvent() {
@@ -32,6 +39,7 @@ const DetailHandler = class {
 
   run() {
     this.addDeleteEvent();
+    this.addGetUpdatePageEvent();
   }
 };
 
