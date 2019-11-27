@@ -5,6 +5,7 @@ const detailController = require("../controller/detail-controller");
 
 router.get("/:postId", isLoggedIn, detailController.getDetailPage);
 router.get("/update/:postId", isLoggedIn, detailController.getUpdatePage);
+router.patch("/:postId", isLoggedIn, detailController.updatePost);
 router.delete("/:postId", isLoggedIn, detailController.deletePost);
 
 module.exports = router;

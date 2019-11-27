@@ -31,6 +31,10 @@ postSchema.statics.getPostByPostId = async function(postId) {
   return post;
 };
 
+postSchema.statics.updatePost = async function(postId, updateText) {
+  await this.updateOne({ _id: postId }, { text: updateText });
+};
+
 postSchema.statics.deletePost = async function(postId) {
   await this.updateOne({ _id: postId }, { display: false });
 };

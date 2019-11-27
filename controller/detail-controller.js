@@ -25,6 +25,13 @@ const detailController = {
     });
   },
 
+  updatePost: async (req, res) => {
+    const postId = req.params.postId;
+    const updateText = req.body.updateText;
+    await Post.updatePost(postId, updateText);
+    return res.json("success");
+  },
+
   deletePost: async (req, res) => {
     const postId = req.params.postId;
     await Post.deletePost(postId);
