@@ -1,0 +1,15 @@
+extends layout
+
+block content
+
+  include header
+  
+  div.ui.middle.aligned.center.aligned.grid
+    div.ui.container
+      form#update-form.ui.form(style="margin:100px")
+        div.field
+          label 내용
+          textarea#inputText(name="text",placeholder="문구입력...")
+            | #{text}
+        button#cancel-update-btn.ui.inverted.secondary.button(type="button" style="margin-left:0") 취소
+        button#submit-update-btn.ui.inverted.blue.button(type="submit" style="margin-left:730px") 수정완료
