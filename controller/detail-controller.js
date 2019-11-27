@@ -14,6 +14,17 @@ const detailController = {
     });
   },
 
+  getUpdatePage: async (req, res) => {
+    const userId = req.user;
+    const postId = req.params.postId;
+    const post = await Post.getPostByPostId(postId);
+    const text = post.text;
+    res.render("post-update", {
+      user: { id: userId },
+      text
+    });
+  },
+
   deletePost: async (req, res) => {
     const postId = req.params.postId;
     await Post.deletePost(postId);
