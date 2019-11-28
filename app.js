@@ -12,6 +12,8 @@ const AWS = require("aws-sdk");
 require("dotenv").config();
 const app = express();
 const checkJwt = require("./auth/check-jwt");
+const moment = require("moment");
+moment.locale('ko')
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -36,6 +38,7 @@ db.once("open", function() {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
+app.locals.moment = moment;
 app.use(logger("dev"));
 app.set("jwt-secret", process.env.SECRET);
 app.use(express.json());

@@ -32,15 +32,21 @@ const CommentHandler = class {
   }
 
   createCommentElement(newCommentData) {
+    moment.locale("ko");
     const commentElement = `
     <div class="comment" id="${newCommentData._id}">
       <a class="avatar"><img src="/images/avatar.png"></a>
       <div class="content">
-        <a class="author" href="/user-page/${newCommentData.publisher}">${newCommentData.publisher}</a>
+        <a class="author" href="/user-page/${newCommentData.publisher}">
+          ${newCommentData.publisher}
+        </a>
         <span class="right floated">
           <i class="trash icon" id="comment-delete-btn" style="cursor:pointer"></i>
         </span>
         <div class="text">${newCommentData.content}</div>
+        <div id="published-date" style="color:#A2A2A2;font-size:12px;">
+          ${moment(newCommentData.publishedDate).fromNow()}
+        </div>
       </div>
     </div>
     `;

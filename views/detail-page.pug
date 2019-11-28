@@ -12,11 +12,12 @@ block content
         .content(style="height:10%")
           img.ui.avatar.image(src="/images/avatar.png")
           a(href=`/user-page/${post.publisher}`, style="color: #000;")
-            |  #{post.publisher}
-          if post.publisher === user.id
-            span.right.floated
+            | #{post.publisher}
+          span.right.floated
+            if post.publisher === user.id
               i#post-update-btn.edit.icon(style="cursor:pointer")
               i#post-delete-btn.trash.icon(style="cursor:pointer")
+            .right.floated.meta #{moment(post.publishedDate).fromNow()}
         .content(style="height:20%;overflow:auto")
           |  #{post.text}
         .content(style="height:50%;overflow:auto")
@@ -30,3 +31,4 @@ block content
 
   script(src='/javascripts/detail.js')
   script(src='/javascripts/comment.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js')

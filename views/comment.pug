@@ -9,8 +9,11 @@ if comments
                     .content
                         a.author(href=`/user-page/${comment.publisher}`)
                             | #{comment.publisher}
-                        if comment.publisher === user.id 
-                            span.right.floated
+                        span.right.floated   
+                            if comment.publisher === user.id 
                                 i#comment-delete-btn.trash.icon(style="cursor:pointer")
                         .text
                             | #{comment.content}
+                        #published-date(style="color:#A2A2A2;font-size:12px;")
+                            | #{moment(comment.publishedDate).fromNow()}
+                        
