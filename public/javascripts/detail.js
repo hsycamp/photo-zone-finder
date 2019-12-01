@@ -1,9 +1,11 @@
 const DetailHandler = class {
   constructor() {
     this.userId = document.querySelector("#user-id").innerText;
+    this.postId = window.location.pathname.substring(8);
     this.updateButton = document.querySelector("#post-update-btn");
     this.deleteButton = document.querySelector("#post-delete-btn");
-    this.postId = window.location.pathname.substring(8);
+    this.likeButton = document.querySelector("#post-like-btn");
+    this.likesCount = document.querySelector("#likes-count");
   }
 
   async deletePostEvent() {
@@ -13,15 +15,39 @@ const DetailHandler = class {
     }
   }
 
+  async updateLikeEvent() {
+    const updateResult = await this.fetchData().updateLike(this.postId);
+    if (updateResult.updatedStatus === "liked") {
+      this.likeButton.className = "heart red like icon";
+      this.likesCount.innerText = `좋아요 ${updateResult.likesCount} 개`;
+      return;
+    }
+    if (updateResult.updatedStatus === "unliked") {
+      this.likeButton.className = "heart outline like icon";
+      this.likesCount.innerText = `좋아요 ${updateResult.likesCount} 개`;
+      return;
+    }
+  }
+
   addGetUpdatePageEvent() {
-    this.updateButton.addEventListener("click", () => {
-      location.href = `/detail/update/${this.postId}`;
-    });
+    if (this.updateButton) {
+      this.updateButton.addEventListener("click", () => {
+        location.href = `/detail/update/${this.postId}`;
+      });
+    }
   }
 
   addDeleteEvent() {
-    this.deleteButton.addEventListener("click", () => {
-      this.deletePostEvent();
+    if (this.deleteButton) {
+      this.deleteButton.addEventListener("click", () => {
+        this.deletePostEvent();
+      });
+    }
+  }
+
+  addLikeEvent() {
+    this.likeButton.addEventListener("click", () => {
+      this.updateLikeEvent();
     });
   }
 
@@ -34,12 +60,22 @@ const DetailHandler = class {
       const result = await response.json();
       return result;
     };
-    return { deletePost };
+    const updateLike = async postId => {
+      const url = `/detail/like/${postId}`;
+      const response = await fetch(url, {
+        method: "PATCH"
+      });
+      const result = await response.json();
+      return result;
+    };
+
+    return { deletePost, updateLike };
   }
 
   run() {
     this.addDeleteEvent();
     this.addGetUpdatePageEvent();
+    this.addLikeEvent();
   }
 };
 
