@@ -23,8 +23,11 @@ block content
         .content(style="height:50%;overflow:auto")
           include comment
         .content(style="height:10%")
-          i.heart.outline.like.icon
-          |   좋아요 3개
+          if user.islikedPost
+            i#post-like-btn.heart.red.like.icon
+          else
+            i#post-like-btn.heart.outline.like.icon
+          span#likes-count 좋아요 #{post.likes} 개
         .extra.content(style="height:10%")
           .ui.large.transparent.input
             input#comment(type='text', name='text' placeholder='댓글 달기...')
