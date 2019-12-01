@@ -39,4 +39,22 @@ postSchema.statics.deletePost = async function(postId) {
   await this.updateOne({ _id: postId }, { display: false });
 };
 
+postSchema.statics.likePost = async function(postId) {
+  const likedPost = await this.findOneAndUpdate(
+    { _id: postId },
+    { $inc: { likes: 1 } },
+    { new: true }
+  );
+  return likedPost;
+};
+
+postSchema.statics.unLikePost = async function(postId) {
+  const likedPost = await this.findOneAndUpdate(
+    { _id: postId },
+    { $inc: { likes: -1 } },
+    { new: true }
+  );
+  return likedPost;
+};
+
 module.exports = mongoose.model("Post", postSchema);

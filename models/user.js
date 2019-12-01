@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
   auth: {
     googleId: String
   },
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }]
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  likePosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }]
 });
 
 userSchema.statics.createUser = async function(id, password) {
@@ -32,6 +33,29 @@ userSchema.statics.addPostId = async function(userId, postId) {
   const updatedUser = await this.findOneAndUpdate(
     { id: userId },
     { $push: { posts: { $each: [postId], $position: 0 } } },
+    { new: true }
+  );
+  return updatedUser;
+};
+
+userSchema.statics.findLikedPost = async function(userId, postId) {
+  const user = await this.findOne({ id: userId, likePosts: postId });
+  return user;
+};
+
+userSchema.statics.addLikedPostId = async function(userId, postId) {
+  const updatedUser = await this.findOneAndUpdate(
+    { id: userId },
+    { $push: { likePosts: { $each: [postId], $position: 0 } } },
+    { new: true }
+  );
+  return updatedUser;
+};
+
+userSchema.statics.removeLikedPostId = async function(userId, postId) {
+  const updatedUser = await this.findOneAndUpdate(
+    { id: userId },
+    { $pull: { likePosts: postId } },
     { new: true }
   );
   return updatedUser;
