@@ -12,8 +12,8 @@ const postController = {
       await User.addPostId(userId, post._id);
 
       return res.redirect(`/detail/${post._id}`);
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   }
 };

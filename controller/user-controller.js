@@ -2,8 +2,8 @@ const passport = require("passport");
 
 const userController = {
   signUp: (req, res, next) => {
-    passport.authenticate("sign-up", (err, user, info) => {
-      if (err) return res.json(401, error);
+    passport.authenticate("sign-up", (error, user, info) => {
+      if (error) return next(error);
       if (info) {
         req.flash("message", info.message);
         return res.status(401).redirect("/sign-up");

@@ -10,15 +10,15 @@ const authController = {
       {
         session: false
       },
-      async (err, user, info) => {
+      async (error, user, info) => {
         try {
-          if (err) return res.json(401, error);
+          if (error) return next(error);
           if (info) {
             req.flash("message", info.message);
             return res.status(401).redirect("/sign-in");
           }
-          req.login(user, { session: false }, async err => {
-            if (err) return next(err);
+          req.login(user, { session: false }, async error => {
+            if (error) return next(error);
             const token = jwt.sign({ id: user.id }, process.env.SECRET, {
               expiresIn: "7d"
             });
@@ -29,8 +29,8 @@ const authController = {
             console.log(token);
             return res.redirect("/");
           });
-        } catch (err) {
-          return next(err);
+        } catch (error) {
+          return next(error);
         }
       }
     )(req, res, next);

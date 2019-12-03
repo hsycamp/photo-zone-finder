@@ -1,5 +1,6 @@
 const express = require("express");
-const router = express.Router();
+const asyncify = require("express-asyncify");
+const router = asyncify(express.Router());
 const { isLoggedIn } = require("../auth/auth");
 const detailController = require("../controller/detail-controller");
 
