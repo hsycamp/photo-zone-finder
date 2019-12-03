@@ -5,29 +5,25 @@ const CommentHandler = class {
     this.deleteButtons = document.querySelectorAll("#comment-delete-btn");
   }
 
-  addCommentEvent() {
-    this.commentBox.addEventListener("keypress", async event => {
-      if (event.keyCode === 13) {
-        const text = this.commentBox.value;
-        if (!text) return this.commentBox.focus();
-        const postId = window.location.pathname.substring(8);
-        const inputData = {
-          text,
-          postId
-        };
-        const newCommentData = await this.fetchData().addComment(
-          JSON.stringify(inputData)
-        );
-        const newCommentElement = this.createCommentElement(newCommentData);
-        this.commentBoard.insertAdjacentHTML("beforeend", newCommentElement);
-        this.commentBox.value = "";
-        const newDeleteButton = document
-          .getElementById(newCommentData._id)
-          .querySelector("#comment-delete-btn");
-        newDeleteButton.addEventListener("click", event => {
-          this.deleteCommentEvent(event);
-        });
-      }
+  async createCommentEvent() {
+    const text = this.commentBox.value;
+    if (!text) return this.commentBox.focus();
+    const postId = window.location.pathname.substring(8);
+    const inputData = {
+      text,
+      postId
+    };
+    const newCommentData = await this.fetchData().createComment(
+      JSON.stringify(inputData)
+    );
+    const newCommentElement = this.createCommentElement(newCommentData);
+    this.commentBoard.insertAdjacentHTML("beforeend", newCommentElement);
+    this.commentBox.value = "";
+    const newDeleteButton = document
+      .getElementById(newCommentData._id)
+      .querySelector("#comment-delete-btn");
+    newDeleteButton.addEventListener("click", event => {
+      this.deleteCommentEvent(event);
     });
   }
 
@@ -53,6 +49,14 @@ const CommentHandler = class {
     return commentElement;
   }
 
+  addCreateCommentEvent() {
+    this.commentBox.addEventListener("keypress", event => {
+      if (event.keyCode === 13) {
+        this.createCommentEvent();
+      }
+    });
+  }
+
   async deleteCommentEvent(event) {
     const commentId = event.target.parentNode.parentNode.parentNode.id;
     const deleteResult = await this.fetchData().deleteComment(commentId);
@@ -62,7 +66,7 @@ const CommentHandler = class {
     }
   }
 
-  addDeleteEvent() {
+  addDeleteCommentEvent() {
     this.deleteButtons.forEach(button => {
       button.addEventListener("click", event => {
         this.deleteCommentEvent(event);
@@ -71,7 +75,7 @@ const CommentHandler = class {
   }
 
   fetchData() {
-    const addComment = async inputData => {
+    const createComment = async inputData => {
       const url = "/comment";
       const response = await fetch(url, {
         method: "POST",
@@ -92,12 +96,12 @@ const CommentHandler = class {
       const result = await response.json();
       return result;
     };
-    return { addComment, deleteComment };
+    return { createComment, deleteComment };
   }
 
   run() {
-    this.addCommentEvent();
-    this.addDeleteEvent();
+    this.addCreateCommentEvent();
+    this.addDeleteCommentEvent();
   }
 };
 
