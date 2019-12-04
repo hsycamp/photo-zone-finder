@@ -13,18 +13,28 @@ const CommentHandler = class {
       text,
       postId
     };
-    const newCommentData = await this.fetchData().createComment(
-      JSON.stringify(inputData)
-    );
-    const newCommentElement = this.createCommentElement(newCommentData);
-    this.commentBoard.insertAdjacentHTML("beforeend", newCommentElement);
-    this.commentBox.value = "";
-    const newDeleteButton = document
-      .getElementById(newCommentData._id)
-      .querySelector("#comment-delete-btn");
-    newDeleteButton.addEventListener("click", event => {
-      this.deleteCommentEvent(event);
-    });
+    try {
+      const response = await this.fetchData().createComment(
+        JSON.stringify(inputData)
+      );
+      if (response.status === 200) {
+        const newCommentData = await response.json();
+
+        const newCommentElement = this.createCommentElement(newCommentData);
+        this.commentBoard.insertAdjacentHTML("beforeend", newCommentElement);
+        this.commentBox.value = "";
+        const newDeleteButton = document
+          .getElementById(newCommentData._id)
+          .querySelector("#comment-delete-btn");
+        newDeleteButton.addEventListener("click", event => {
+          this.deleteCommentEvent(event);
+        });
+        return;
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
   createCommentElement(newCommentData) {
@@ -59,10 +69,16 @@ const CommentHandler = class {
 
   async deleteCommentEvent(event) {
     const commentId = event.target.parentNode.parentNode.parentNode.id;
-    const deleteResult = await this.fetchData().deleteComment(commentId);
-    if (deleteResult === "success") {
-      const targetComment = document.getElementById(commentId);
-      this.commentBoard.removeChild(targetComment);
+    try {
+      const response = await this.fetchData().deleteComment(commentId);
+      if (response.status === 200) {
+        const targetComment = document.getElementById(commentId);
+        this.commentBoard.removeChild(targetComment);
+        return;
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
     }
   }
 
@@ -76,25 +92,31 @@ const CommentHandler = class {
 
   fetchData() {
     const createComment = async inputData => {
-      const url = "/comment";
-      const response = await fetch(url, {
-        method: "POST",
-        body: inputData,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      const result = await response.json();
-      return result;
+      try {
+        const url = "/comment";
+        const response = await fetch(url, {
+          method: "POST",
+          body: inputData,
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
     };
 
     const deleteComment = async commentId => {
-      const url = `/comment/${commentId}`;
-      const response = await fetch(url, {
-        method: "DELETE"
-      });
-      const result = await response.json();
-      return result;
+      try {
+        const url = `/comment/${commentId}`;
+        const response = await fetch(url, {
+          method: "DELETE"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
     };
     return { createComment, deleteComment };
   }

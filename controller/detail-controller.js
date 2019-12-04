@@ -31,13 +31,13 @@ const detailController = {
     const postId = req.params.postId;
     const updateText = req.body.updateText;
     await Post.updatePost(postId, updateText);
-    return res.json("success");
+    return res.end();
   },
 
   deletePost: async (req, res) => {
     const postId = req.params.postId;
     await Post.deletePost(postId);
-    return res.json("success");
+    return res.end();
   },
 
   updateLike: async (req, res) => {

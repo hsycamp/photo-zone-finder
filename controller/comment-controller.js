@@ -15,7 +15,7 @@ const commentController = {
     const commentId = req.params.commentId;
     await Comment.deleteComment(commentId);
 
-    return res.json("success");
+    return res.end();
   }
 };
 

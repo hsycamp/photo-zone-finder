@@ -9,23 +9,37 @@ const DetailHandler = class {
   }
 
   async deletePostEvent() {
-    const deleteResult = await this.fetchData().deletePost(this.postId);
-    if (deleteResult === "success") {
-      location.href = `/user-page/${this.userId}`;
+    try {
+      const response = await this.fetchData().deletePost(this.postId);
+      if (response.status === 200) {
+        location.href = `/user-page/${this.userId}`;
+        return;
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
     }
   }
 
   async updateLikeEvent() {
-    const updateResult = await this.fetchData().updateLike(this.postId);
-    if (updateResult.updatedStatus === "liked") {
-      this.likeButton.className = "heart red like icon";
-      this.likesCount.innerText = `좋아요 ${updateResult.likesCount} 개`;
-      return;
-    }
-    if (updateResult.updatedStatus === "unliked") {
-      this.likeButton.className = "heart outline like icon";
-      this.likesCount.innerText = `좋아요 ${updateResult.likesCount} 개`;
-      return;
+    try {
+      const response = await this.fetchData().updateLike(this.postId);
+      if (response.status === 200) {
+        const updateResult = await response.json();
+        if (updateResult.updatedStatus === "liked") {
+          this.likeButton.className = "heart red like icon";
+          this.likesCount.innerText = `좋아요 ${updateResult.likesCount} 개`;
+          return;
+        }
+        if (updateResult.updatedStatus === "unliked") {
+          this.likeButton.className = "heart outline like icon";
+          this.likesCount.innerText = `좋아요 ${updateResult.likesCount} 개`;
+          return;
+        }
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
     }
   }
 
@@ -53,20 +67,27 @@ const DetailHandler = class {
 
   fetchData() {
     const deletePost = async postId => {
-      const url = `/detail/${postId}`;
-      const response = await fetch(url, {
-        method: "DELETE"
-      });
-      const result = await response.json();
-      return result;
+      try {
+        const url = `/detail/${postId}`;
+        const response = await fetch(url, {
+          method: "DELETE"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
     };
+
     const updateLike = async postId => {
-      const url = `/detail/like/${postId}`;
-      const response = await fetch(url, {
-        method: "PATCH"
-      });
-      const result = await response.json();
-      return result;
+      try {
+        const url = `/detail/like/${postId}`;
+        const response = await fetch(url, {
+          method: "PATCH"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
     };
 
     return { deletePost, updateLike };

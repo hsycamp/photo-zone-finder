@@ -8,11 +8,17 @@ const PostUpdateHandler = class {
   }
 
   async updatePostEvent() {
-    const updateResult = await this.fetchData().updatePost(
-      JSON.stringify({ updateText: this.inputText.value })
-    );
-    if (updateResult === "success") {
-      location.href = `/detail/${this.postId}`;
+    try {
+      const response = await this.fetchData().updatePost(
+        JSON.stringify({ updateText: this.inputText.value })
+      );
+      if (response.status === 200) {
+        location.href = `/detail/${this.postId}`;
+        return;
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
     }
   }
 
@@ -30,16 +36,19 @@ const PostUpdateHandler = class {
 
   fetchData() {
     const updatePost = async inputData => {
-      const url = `/detail/${this.postId}`;
-      const response = await fetch(url, {
-        method: "PATCH",
-        body: inputData,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      const result = await response.json();
-      return result;
+      try {
+        const url = `/detail/${this.postId}`;
+        const response = await fetch(url, {
+          method: "PATCH",
+          body: inputData,
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
     };
     return { updatePost };
   }
