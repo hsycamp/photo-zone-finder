@@ -16,9 +16,7 @@ const authController = {
       return res.redirect("/sign-in");
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.SECRET, {
-      expiresIn: "7d"
-    });
+    const token = await jwt.sign({ id: user.id }, process.env.SECRET);
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 10
@@ -49,9 +47,7 @@ const authController = {
       }
 
       req.user = googleId;
-      const token = jwt.sign({ id: googleId }, process.env.SECRET, {
-        expiresIn: "7d"
-      });
+      const token = await jwt.sign({ id: googleId }, process.env.SECRET);
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 10
