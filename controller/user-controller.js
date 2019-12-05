@@ -1,15 +1,17 @@
-const passport = require("passport");
+const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
 const userController = {
-  signUp: (req, res, next) => {
-    passport.authenticate("sign-up", (error, user, info) => {
-      if (error) return next(error);
-      if (info) {
-        req.flash("message", info.message);
-        return res.status(401).redirect("/sign-up");
-      }
-      return res.redirect("/sign-in");
-    })(req, res, next);
+  signUp: async (req, res, next) => {
+    const { id, password } = req.body;
+    const existId = await User.findUser(id);
+    if (existId) {
+      req.flash("message", "이미 존재하는 아이디입니다.");
+      return res.redirect("/sign-up");
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.createUser(id, hashedPassword);
+    return res.redirect("/sign-in");
   }
 };
 

@@ -4,8 +4,6 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
-const passport = require("passport");
-const passportConfig = require("./auth/passport");
 const flash = require("connect-flash");
 const mongoose = require("mongoose");
 const AWS = require("aws-sdk");
@@ -58,9 +56,7 @@ app.use(
   })
 );
 app.use(flash());
-app.use(passport.initialize());
 app.use(checkJwt());
-passportConfig();
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,

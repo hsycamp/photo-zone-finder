@@ -1,39 +1,30 @@
-const passport = require("passport");
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const googleOauth = require("../auth/google-oauth");
-const Users = require("../models/user");
 
 const authController = {
-  signIn: (req, res, next) => {
-    passport.authenticate(
-      "sign-in",
-      {
-        session: false
-      },
-      async (error, user, info) => {
-        try {
-          if (error) return next(error);
-          if (info) {
-            req.flash("message", info.message);
-            return res.status(401).redirect("/sign-in");
-          }
-          req.login(user, { session: false }, async error => {
-            if (error) return next(error);
-            const token = jwt.sign({ id: user.id }, process.env.SECRET, {
-              expiresIn: "7d"
-            });
-            res.cookie("token", token, {
-              httpOnly: true,
-              maxAge: 1000 * 60 * 10
-            });
-            console.log(token);
-            return res.redirect("/");
-          });
-        } catch (error) {
-          return next(error);
-        }
-      }
-    )(req, res, next);
+  signIn: async (req, res, next) => {
+    const { id, password } = req.body;
+    const user = await User.findUser(id);
+    if (!user) {
+      req.flash("message", "존재하지 않는 아이디입니다.");
+      return res.redirect("/sign-in");
+    }
+    const isValidPassword = await user.checkPassword(password);
+    if (!isValidPassword) {
+      req.flash("message", "비밀번호가 틀렸습니다.");
+      return res.redirect("/sign-in");
+    }
+
+    const token = jwt.sign({ id: user.id }, process.env.SECRET, {
+      expiresIn: "7d"
+    });
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 10
+    });
+    console.log(token);
+    return res.redirect("/");
   },
 
   googleSignIn: (req, res, next) => {
@@ -51,10 +42,10 @@ const authController = {
 
       const email = me.data.emails[0].value;
       const googleId = email.split("@")[0];
-      const userId = await Users.findOne({ "auth.googleId": googleId });
+      const userId = await User.findOne({ "auth.googleId": googleId });
 
       if (!userId) {
-        await Users.create({ "auth.googleId": googleId });
+        await User.create({ "auth.googleId": googleId });
       }
 
       req.user = googleId;
