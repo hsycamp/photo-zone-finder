@@ -1,0 +1,25 @@
+extends layout
+
+block content
+
+  div.ui.middle.aligned.center.aligned.grid(style="padding-top:100px")
+    div.cloumn(style="width: 400px")
+        h2.ui.teal.header(style="text-align:center")
+            img(src="/images/camera-black.svg",style="width:100px;height:100px;margin-bottom:15px")
+            div.content(style="font-size:40px;color:#000000") Photo Zone Finder
+            div.content(style="padding-top:10px;font-size:20px;color:#9CA2A6") 사용할 이름을 설정해주세요.
+        form#oauth-sign-up-form.ui.large.form(action="/users" method="POST")
+            div.ui.stacked.segment
+                div.field
+                    input(type="hidden" name="userId" value=`${signUpData.userId}`)
+                    input(type="hidden" name="authProvider" value=`${signUpData.authProvider}`)
+                div.field
+                div.ui.left.icon.input(style="width:100%")
+                    i.user.icon
+                    input#user-name(type="text" name="userName" placeholder="이름" required="" )
+                div.field
+                input.ui.fluid.large.teal.submit.button(type="submit" value="완료" style="background:#108FE3")
+                div.field
+                div#message-box(style="text-align:center;color:#D51414")= errorMessage
+
+    script(src='/javascripts/oauth-sign-up.js')
