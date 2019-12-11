@@ -16,7 +16,9 @@ const authController = {
       return res.redirect("/sign-in");
     }
 
-    const token = await jwt.sign({ id: user.id }, process.env.SECRET);
+    const userInfo = { _id: user._id, userName: user.userName };
+    const token = await jwt.sign({ userInfo }, process.env.SECRET);
+
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 10
@@ -47,7 +49,9 @@ const authController = {
         return res.render("oauth-sign-up", { signUpData });
       }
 
-      const token = await jwt.sign({ id: googleId }, process.env.SECRET);
+      const userInfo = { _id: user._id, userName: user.userName };
+      const token = await jwt.sign({ userInfo }, process.env.SECRET);
+
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 10

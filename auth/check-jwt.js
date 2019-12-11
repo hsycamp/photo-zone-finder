@@ -8,7 +8,7 @@ const checkJwt = () => async (req, res, next) => {
 
   try {
     const decodedToken = await jwt.verify(token, process.env.SECRET);
-    req.user = decodedToken.id;
+    req.user = decodedToken.userInfo;
     return next();
   } catch (error) {
     return next(error);
