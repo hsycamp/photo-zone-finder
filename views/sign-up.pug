@@ -8,17 +8,22 @@ block content
             img(src="/images/camera-black.svg",style="width:100px;height:100px;margin-bottom:15px")
             div.content(style="font-size:40px;color:#000000") Photo Zone Finder
             div.content(style="padding-top:10px;font-size:20px;color:#9CA2A6") 포토존을 보려면 가입하세요.
-        form.ui.large.form(action="/users/local" method="POST")
+        form.ui.large.form(action="/users" method="POST")
             div.ui.stacked.segment
                 div.field
                 div.ui.left.icon.input(style="width:100%")
+                    i.id.card.icon
+                    input#id(type="text" name="userId" placeholder="아이디" required="" )
+                div.field
+                div.ui.left.icon.input(style="width:100%")
                     i.user.icon
-                    input#id(type="text" name="id" placeholder="아이디" required="" )
+                    input(type="text" name="userName" placeholder="이름" required="" )
                 div.field
                 div.ui.left.icon.input(style="width:100%")
                     i.lock.icon
                     input(type="password" name="password" placeholder="비밀번호" required="")
                 div.field
+                input(type="hidden" name="authProvider" value="local")
                 input.ui.fluid.large.teal.submit.button(type="submit" value="가입" style="background:#108FE3")
                 div.field
                 div(style="text-align:center;color:#D51414")= errorMessage
