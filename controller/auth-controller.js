@@ -4,8 +4,8 @@ const googleOauth = require("../auth/google-oauth");
 
 const authController = {
   signIn: async (req, res, next) => {
-    const { id, password } = req.body;
-    const user = await User.findUser(id);
+    const { userId, password } = req.body;
+    const user = await User.findUser(userId, "local");
     if (!user) {
       req.flash("message", "존재하지 않는 아이디입니다.");
       return res.redirect("/sign-in");
@@ -40,13 +40,13 @@ const authController = {
 
       const email = me.data.emails[0].value;
       const googleId = email.split("@")[0];
-      const userId = await User.findOne({ "auth.googleId": googleId });
+      const user = await User.findUser(googleId, "google");
 
-      if (!userId) {
-        await User.create({ "auth.googleId": googleId });
+      if (!user) {
+        const signUpData = { userId: googleId, authProvider: "google" };
+        return res.render("oauth-sign-up", { signUpData });
       }
 
-      req.user = googleId;
       const token = await jwt.sign({ id: googleId }, process.env.SECRET);
       res.cookie("token", token, {
         httpOnly: true,

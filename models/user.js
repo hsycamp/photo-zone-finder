@@ -2,27 +2,47 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-  id: String,
+  userId: String,
+  userName: String,
   password: String,
-  auth: {
-    googleId: String
-  },
+  authProvider: { type: String, default: "local" },
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   likePosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }]
 });
 
-userSchema.statics.createUser = async function(id, password) {
-  const newUser = await this.create({ id, password });
+userSchema.statics.createUser = async function(signUpData) {
+  const { userId, userName, password, authProvider } = signUpData;
+  const newUser = await this.create({
+    userId,
+    userName,
+    password,
+    authProvider
+  });
   return newUser;
 };
 
-userSchema.statics.findUser = async function(userId) {
-  const user = await this.findOne({ id: userId });
+userSchema.statics.findUser = async function(userId, authProvider) {
+  const user = await this.findOne({ userId, authProvider });
   return user;
+};
+userSchema.statics.checkDuplicateUserId = async function(userId, authProvider) {
+  const user = await this.findOne({ userId, authProvider });
+  if (user) {
+    return true;
+  }
+  return false;
+};
+
+userSchema.statics.checkDuplicateUserName = async function(userName) {
+  const user = await this.findOne({ userName });
+  if (user) {
+    return true;
+  }
+  return false;
 };
 
 userSchema.statics.getUserData = async function(userId) {
-  const userData = await this.findOne({ id: userId }).populate({
+  const userData = await this.findOne({ userId }).populate({
     path: "posts",
     match: { display: true }
   });
@@ -31,7 +51,7 @@ userSchema.statics.getUserData = async function(userId) {
 
 userSchema.statics.addPostId = async function(userId, postId) {
   const updatedUser = await this.findOneAndUpdate(
-    { id: userId },
+    { userId },
     { $push: { posts: { $each: [postId], $position: 0 } } },
     { new: true }
   );
@@ -39,13 +59,13 @@ userSchema.statics.addPostId = async function(userId, postId) {
 };
 
 userSchema.statics.findLikedPost = async function(userId, postId) {
-  const user = await this.findOne({ id: userId, likePosts: postId });
+  const user = await this.findOne({ userId, likePosts: postId });
   return user;
 };
 
 userSchema.statics.addLikedPostId = async function(userId, postId) {
   const updatedUser = await this.findOneAndUpdate(
-    { id: userId },
+    { userId },
     { $push: { likePosts: { $each: [postId], $position: 0 } } },
     { new: true }
   );
@@ -54,7 +74,7 @@ userSchema.statics.addLikedPostId = async function(userId, postId) {
 
 userSchema.statics.removeLikedPostId = async function(userId, postId) {
   const updatedUser = await this.findOneAndUpdate(
-    { id: userId },
+    { userId },
     { $pull: { likePosts: postId } },
     { new: true }
   );
