@@ -26,6 +26,15 @@ const userController = {
     };
     const user = await User.createUser(signUpData);
     return res.redirect("/sign-in");
+  },
+
+  checkDuplicateUserName: async (req, res, next) => {
+    const userName = req.params.userName;
+    const isDuplicateUserName = await User.checkDuplicateUserName(userName);
+    if (isDuplicateUserName) {
+      return res.send("duplicate");
+    }
+    return res.send("unique");
   }
 };
 
