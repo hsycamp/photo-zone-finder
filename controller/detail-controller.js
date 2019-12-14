@@ -4,25 +4,25 @@ const Comment = require("../models/comment");
 
 const detailController = {
   getDetailPage: async (req, res) => {
-    const userId = req.user;
+    const userObjectId = req.user._id;
     const postId = req.params.postId;
-    const islikedPost = await User.findLikedPost(userId, postId);
+    const islikedPost = await User.checkLikedPost(userObjectId, postId);
+    req.user.islikedPost = islikedPost;
     const post = await Post.getPostByPostId(postId);
     const comments = await Comment.getCommentsByPostId(postId);
     res.render("detail-page", {
-      user: { id: userId, islikedPost },
+      user: req.user,
       post,
       comments
     });
   },
 
   getUpdatePage: async (req, res) => {
-    const userId = req.user;
     const postId = req.params.postId;
     const post = await Post.getPostByPostId(postId);
     const text = post.text;
     res.render("post-update", {
-      user: { id: userId },
+      user: req.user,
       text
     });
   },
@@ -41,12 +41,12 @@ const detailController = {
   },
 
   updateLike: async (req, res) => {
-    const userId = req.user;
+    const userObjectId = req.user;
     const postId = req.params.postId;
-    const islikedPost = await User.findLikedPost(userId, postId);
+    const islikedPost = await User.checkLikedPost(userObjectId, postId);
     if (islikedPost) {
       const unLikedPost = await Post.unLikePost(postId);
-      await User.removeLikedPostId(userId, unLikedPost._id);
+      await User.removeLikedPostId(userObjectId, unLikedPost._id);
       const updateResult = {
         updatedStatus: "unliked",
         likesCount: unLikedPost.likes
@@ -54,7 +54,7 @@ const detailController = {
       return res.json(updateResult);
     }
     const likedPost = await Post.likePost(postId);
-    await User.addLikedPostId(userId, likedPost._id);
+    await User.addLikedPostId(userObjectId, likedPost._id);
     const updateResult = {
       updatedStatus: "liked",
       likesCount: likedPost.likes

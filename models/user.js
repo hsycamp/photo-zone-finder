@@ -49,32 +49,35 @@ userSchema.statics.getUserData = async function(userName) {
   return userData;
 };
 
-userSchema.statics.addPostId = async function(userId, postId) {
+userSchema.statics.addPostId = async function(userObjectId, postId) {
   const updatedUser = await this.findOneAndUpdate(
-    { userId },
+    { _id: userObjectId },
     { $push: { posts: { $each: [postId], $position: 0 } } },
     { new: true }
   );
   return updatedUser;
 };
 
-userSchema.statics.findLikedPost = async function(userId, postId) {
-  const user = await this.findOne({ userId, likePosts: postId });
-  return user;
+userSchema.statics.checkLikedPost = async function(userObjectId, postId) {
+  const user = await this.findOne({ _id: userObjectId, likePosts: postId });
+  if (user) {
+    return true;
+  }
+  return false;
 };
 
-userSchema.statics.addLikedPostId = async function(userId, postId) {
+userSchema.statics.addLikedPostId = async function(userObjectId, postId) {
   const updatedUser = await this.findOneAndUpdate(
-    { userId },
+    { _id: userObjectId },
     { $push: { likePosts: { $each: [postId], $position: 0 } } },
     { new: true }
   );
   return updatedUser;
 };
 
-userSchema.statics.removeLikedPostId = async function(userId, postId) {
+userSchema.statics.removeLikedPostId = async function(userObjectId, postId) {
   const updatedUser = await this.findOneAndUpdate(
-    { userId },
+    { _id: userObjectId },
     { $pull: { likePosts: postId } },
     { new: true }
   );
