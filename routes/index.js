@@ -14,7 +14,7 @@ router.get("/sign-in", isNotLoggedIn, indexController.getSignInPage);
 router.get("/sign-up", isNotLoggedIn, indexController.getSignUpPage);
 
 /* GET user page */
-router.get("/user-page/:publisherId", isLoggedIn, indexController.getUserPage);
+router.get("/user-page/:userName", isLoggedIn, indexController.getUserPage);
 
 /* GET post page */
 router.get("/post", isLoggedIn, indexController.getPostPage);

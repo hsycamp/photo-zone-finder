@@ -5,7 +5,7 @@ const postController = {
   uploadImage: async (req, res, next) => {
     try {
       const content = req.file.location;
-      const userId = req.user;
+      const userId = req.user._id;
       const text = req.body.text;
       const postData = { content, text, userId };
       const post = await Post.createPost(postData);

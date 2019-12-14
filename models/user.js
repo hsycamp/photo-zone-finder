@@ -41,8 +41,8 @@ userSchema.statics.checkDuplicateUserName = async function(userName) {
   return false;
 };
 
-userSchema.statics.getUserData = async function(userId) {
-  const userData = await this.findOne({ userId }).populate({
+userSchema.statics.getUserData = async function(userName) {
+  const userData = await this.findOne({ userName }).populate({
     path: "posts",
     match: { display: true }
   });

@@ -11,10 +11,10 @@ block content
       .ui.card(style="margin-top:0;width:34%;height:600px;float:left")
         .content(style="height:10%")
           img.ui.avatar.image(src="/images/avatar.png")
-          a(href=`/user-page/${post.publisher}`, style="color: #000;")
-            | #{post.publisher}
+          a(href=`/user-page/${post.publisher.userName}`, style="color: #000;")
+            | #{post.publisher.userName}
           span.right.floated
-            if post.publisher === user.id
+            if post.publisher._id.toString() === user._id
               i#post-update-btn.edit.icon(style="cursor:pointer")
               i#post-delete-btn.trash.icon(style="cursor:pointer")
             .right.floated.meta #{moment(post.publishedDate).fromNow()}

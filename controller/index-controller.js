@@ -3,9 +3,8 @@ const User = require("../models/user");
 
 const indexController = {
   getIndexPage: async (req, res) => {
-    const userId = req.user;
     const posts = await Post.getAllPosts();
-    res.render("index", { user: { id: userId }, posts: posts });
+    res.render("index", { user: req.user, posts: posts });
   },
   getSignInPage: (req, res) => {
     const flashMessage = req.flash("message");
@@ -22,23 +21,21 @@ const indexController = {
     });
   },
   getPostPage: (req, res) => {
-    const userId = req.user;
     const flashMessage = req.flash("message");
     res.render("post", {
       title: "게시물 업로드 페이지",
-      user: { id: userId },
+      user: req.user,
       errorMessage: flashMessage
     });
   },
   getUserPage: async (req, res) => {
-    const userId = req.user;
-    const publisherId = req.params.publisherId;
-    const publisherData = await User.getUserData(publisherId);
+    const userName = req.params.userName;
+    const userData = await User.getUserData(userName);
     const flashMessage = req.flash("message");
     res.render("user-page", {
       title: "유저 페이지",
-      user: { id: userId },
-      publisherData,
+      user: req.user,
+      userData,
       errorMessage: flashMessage
     });
   }

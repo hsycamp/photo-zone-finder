@@ -1,6 +1,6 @@
 const DetailHandler = class {
   constructor() {
-    this.userId = document.querySelector("#user-id").innerText;
+    this.userName = document.querySelector("#user-name").innerText;
     this.postId = window.location.pathname.substring(8);
     this.updateButton = document.querySelector("#post-update-btn");
     this.deleteButton = document.querySelector("#post-delete-btn");
@@ -12,7 +12,7 @@ const DetailHandler = class {
     try {
       const response = await this.fetchData().deletePost(this.postId);
       if (response.status === 200) {
-        location.href = `/user-page/${this.userId}`;
+        location.href = `/user-page/${this.userName}`;
         return;
       }
       throw new Error("서버에 문제가 발생했습니다.");

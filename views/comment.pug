@@ -7,10 +7,10 @@ if comments
                     a.avatar
                         img(src='/images/avatar.png')
                     .content
-                        a.author(href=`/user-page/${comment.publisher}`)
-                            | #{comment.publisher}
+                        a.author(href=`/user-page/${comment.publisher.userName}`)
+                            | #{comment.publisher.userName}
                         span.right.floated   
-                            if comment.publisher === user.id 
+                            if comment.publisher._id.toString() === user._id 
                                 i#comment-delete-btn.trash.icon(style="cursor:pointer")
                         .text
                             | #{comment.content}
