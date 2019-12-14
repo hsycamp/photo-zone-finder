@@ -1,7 +1,6 @@
 const PostUpdateHandler = class {
   constructor() {
     this.updateForm = document.querySelector("#update-form");
-    this.submitUpdateButton = document.querySelector("#submit-update-btn");
     this.cancelUpdateButton = document.querySelector("#cancel-update-btn");
     this.inputText = document.querySelector("#inputText");
     this.postId = window.location.pathname.substring(15);
