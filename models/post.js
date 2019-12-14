@@ -3,18 +3,18 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
   content: String,
   text: String,
-  publisher: String,
+  publisher: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   publishedDate: { type: Date, default: Date.now },
   likes: { type: Number, default: 0 },
   display: { type: Boolean, default: true }
 });
 
 postSchema.statics.createPost = async function(postData) {
-  const { content, text, userId } = postData;
+  const { content, text, userObjectId } = postData;
   const newPost = await this.create({
     content,
     text,
-    publisher: userId
+    publisher: userObjectId
   });
   return newPost;
 };
@@ -27,7 +27,10 @@ postSchema.statics.getAllPosts = async function() {
 };
 
 postSchema.statics.getPostByPostId = async function(postId) {
-  const post = await this.findById(postId);
+  const post = await this.findById(postId).populate({
+    path: "publisher",
+    select: "userName"
+  });
   return post;
 };
 
