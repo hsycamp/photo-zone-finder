@@ -3,12 +3,13 @@ const Comment = require("../models/comment");
 
 const commentController = {
   addComment: async (req, res) => {
-    const user = req.user;
+    const userObjectId = req.user._id;
     const { text, postId } = req.body;
-    const commentData = { text, postId, user };
-    const newComment = await Comment.createComment(commentData);
+    const commentData = { text, postId, userObjectId };
+    const newCommentData = await Comment.createComment(commentData);
+    const addResult = { newCommentData, publisherName: req.user.userName };
 
-    return res.json(newComment);
+    return res.json(addResult);
   },
 
   deleteComment: async (req, res) => {

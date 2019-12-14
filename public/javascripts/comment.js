@@ -18,9 +18,12 @@ const CommentHandler = class {
         JSON.stringify(inputData)
       );
       if (response.status === 200) {
-        const newCommentData = await response.json();
+        const { newCommentData, publisherName } = await response.json();
 
-        const newCommentElement = this.createCommentElement(newCommentData);
+        const newCommentElement = this.createCommentElement(
+          newCommentData,
+          publisherName
+        );
         this.commentBoard.insertAdjacentHTML("beforeend", newCommentElement);
         this.commentBox.value = "";
         const newDeleteButton = document
@@ -37,14 +40,14 @@ const CommentHandler = class {
     }
   }
 
-  createCommentElement(newCommentData) {
+  createCommentElement(newCommentData, publisherName) {
     moment.locale("ko");
     const commentElement = `
     <div class="comment" id="${newCommentData._id}">
       <a class="avatar"><img src="/images/avatar.png"></a>
       <div class="content">
-        <a class="author" href="/user-page/${newCommentData.publisher}">
-          ${newCommentData.publisher}
+        <a class="author" href="/user-page/${publisherName}">
+          ${publisherName}
         </a>
         <span class="right floated">
           <i class="trash icon" id="comment-delete-btn" style="cursor:pointer"></i>
