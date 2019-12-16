@@ -9,7 +9,7 @@ block content
             form.ui.form(action="/post/img", method="POST", enctype="multipart/form-data",style="margin:100px")
                 div.field
                     label 사진
-                    input(type="file", name="img")
+                    input(type="file", name="img", required)
                 div.field
                     label 내용
                     textarea(name="text",placeholder="문구입력...")
