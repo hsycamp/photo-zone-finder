@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const generateJwt = require("../util/jwt-token-generator");
 
 const userController = {
   signUp: async (req, res, next) => {
@@ -25,6 +26,9 @@ const userController = {
       authProvider
     };
     const user = await User.createUser(signUpData);
+    const userInfo = { _id: user._id, userName: user.userName };
+    await generateJwt(res, userInfo);
+
     return res.redirect("/sign-in");
   },
 
