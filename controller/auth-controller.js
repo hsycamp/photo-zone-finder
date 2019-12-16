@@ -1,6 +1,6 @@
 const User = require("../models/user");
-const jwt = require("jsonwebtoken");
 const googleOauth = require("../auth/google-oauth");
+const generateJwt = require("../util/jwt-token-generator");
 
 const authController = {
   signIn: async (req, res, next) => {
@@ -17,13 +17,8 @@ const authController = {
     }
 
     const userInfo = { _id: user._id, userName: user.userName };
-    const token = await jwt.sign({ userInfo }, process.env.SECRET);
+    await generateJwt(res, userInfo);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 10
-    });
-    console.log(token);
     return res.redirect("/");
   },
 
@@ -50,12 +45,8 @@ const authController = {
       }
 
       const userInfo = { _id: user._id, userName: user.userName };
-      const token = await jwt.sign({ userInfo }, process.env.SECRET);
+      await generateJwt(res, userInfo);
 
-      res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 10
-      });
       return res.redirect("/");
     } catch (error) {
       next(error);
