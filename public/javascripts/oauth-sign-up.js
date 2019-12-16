@@ -4,6 +4,7 @@ const OauthSignUpHandler = class {
     this.userName = document.querySelector("#user-name");
     this.messageBox = document.querySelector("#message-box");
     this.isValidUserName = false;
+    this.timer;
   }
 
   async checkDuplicateUserNameEvent() {
@@ -39,7 +40,12 @@ const OauthSignUpHandler = class {
 
   addCheckDuplicateUserNameEvent() {
     this.userName.addEventListener("keyup", event => {
-      this.checkDuplicateUserNameEvent();
+      if (this.timer) {
+        clearTimeout(this.timer);
+      }
+      this.timer = setTimeout(() => {
+        this.checkDuplicateUserNameEvent();
+      }, 300);
     });
   }
 
