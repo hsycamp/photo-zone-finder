@@ -6,6 +6,7 @@ const DetailHandler = class {
     this.deleteButton = document.querySelector("#post-delete-btn");
     this.likeButton = document.querySelector("#post-like-btn");
     this.likesCount = document.querySelector("#likes-count");
+    this.isDeleted = false;
   }
 
   async deletePostEvent() {
@@ -54,7 +55,10 @@ const DetailHandler = class {
   addDeleteEvent() {
     if (this.deleteButton) {
       this.deleteButton.addEventListener("click", () => {
-        this.deletePostEvent();
+        if (!this.isDeleted) {
+          this.isDeleted = true;
+          this.deletePostEvent();
+        }
       });
     }
   }
