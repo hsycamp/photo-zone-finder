@@ -1,10 +1,15 @@
+import { debounceEvent } from "./utils/debounce-event.js";
+
 const OauthSignUpHandler = class {
   constructor() {
     this.oauthSignUpForm = document.querySelector("#oauth-sign-up-form");
     this.userName = document.querySelector("#user-name");
     this.messageBox = document.querySelector("#message-box");
     this.isValidUserName = false;
-    this.timer;
+    this.debouncedCheckDuplicateUserNameEvent = debounceEvent(
+      this.checkDuplicateUserNameEvent.bind(this),
+      500
+    );
   }
 
   async checkDuplicateUserNameEvent() {
@@ -40,12 +45,7 @@ const OauthSignUpHandler = class {
 
   addCheckDuplicateUserNameEvent() {
     this.userName.addEventListener("keyup", event => {
-      if (this.timer) {
-        clearTimeout(this.timer);
-      }
-      this.timer = setTimeout(() => {
-        this.checkDuplicateUserNameEvent();
-      }, 300);
+      this.debouncedCheckDuplicateUserNameEvent();
     });
   }
 

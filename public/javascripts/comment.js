@@ -1,9 +1,18 @@
+import { debounceEvent } from "./utils/debounce-event.js";
+
 const CommentHandler = class {
   constructor() {
     this.commentBoard = document.querySelector(".ui.comments");
     this.commentBox = document.querySelector("#comment");
     this.deleteButtons = document.querySelectorAll("#comment-delete-btn");
-    this.timer;
+    this.debouncedCreateCommentEvent = debounceEvent(
+      this.createCommentEvent.bind(this),
+      500
+    );
+    this.debouncedDeleteCommentEvent = debounceEvent(
+      this.deleteCommentEvent.bind(this),
+      500
+    );
   }
 
   async createCommentEvent() {
@@ -31,12 +40,7 @@ const CommentHandler = class {
           .getElementById(newCommentData._id)
           .querySelector("#comment-delete-btn");
         newDeleteButton.addEventListener("click", event => {
-          if (this.timer) {
-            clearTimeout(this.timer);
-          }
-          this.timer = setTimeout(() => {
-            this.deleteCommentEvent(event);
-          }, 1000);
+          this.debouncedDeleteCommentEvent(event);
         });
         return;
       }
@@ -71,12 +75,7 @@ const CommentHandler = class {
   addCreateCommentEvent() {
     this.commentBox.addEventListener("keypress", event => {
       if (event.keyCode === 13) {
-        if (this.timer) {
-          clearTimeout(this.timer);
-        }
-        this.timer = setTimeout(() => {
-          this.createCommentEvent();
-        }, 1000);
+        this.debouncedCreateCommentEvent();
       }
     });
   }
@@ -99,12 +98,7 @@ const CommentHandler = class {
   addDeleteCommentEvent() {
     this.deleteButtons.forEach(button => {
       button.addEventListener("click", event => {
-        if (this.timer) {
-          clearTimeout(this.timer);
-        }
-        this.timer = setTimeout(() => {
-          this.deleteCommentEvent(event);
-        }, 1000);
+        this.debouncedDeleteCommentEvent(event);
       });
     });
   }
