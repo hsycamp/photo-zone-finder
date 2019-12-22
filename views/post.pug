@@ -13,6 +13,7 @@ block content
             div.field
                 label 내용
                 textarea(name="text",placeholder="문구입력...")
-            button.ui.inverted.blue.button(type="submit",style="margin-left:810px") 업로드
+            button#cancel-upload-btn.ui.inverted.secondary.button(type="button" style="margin-left:0") 취소
+            button.ui.inverted.blue.button(type="submit",style="float:right") 업로드
   script(src='/javascripts/post.js') 
     

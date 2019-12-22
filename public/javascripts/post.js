@@ -1,6 +1,7 @@
 const PostHandler = class {
   constructor() {
     this.postForm = document.querySelector("#post-form");
+    this.cancelUploadButton = document.querySelector("#cancel-upload-btn");
     this.isSubmitted = false;
   }
 
@@ -14,8 +15,15 @@ const PostHandler = class {
     });
   }
 
+  addCancelUploadPostEvent() {
+    this.cancelUploadButton.addEventListener("click", () => {
+      location.href = "javascript:history.back()";
+    });
+  }
+
   run() {
     this.addCreatePostEvent();
+    this.addCancelUploadPostEvent();
   }
 };
 
