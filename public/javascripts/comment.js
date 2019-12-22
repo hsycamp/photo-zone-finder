@@ -81,6 +81,10 @@ const CommentHandler = class {
   }
 
   async deleteCommentEvent(event) {
+    const isConfirmed = confirm("삭제하시겠습니까?");
+    if (!isConfirmed) {
+      return;
+    }
     const commentId = event.target.parentNode.parentNode.parentNode.id;
     try {
       const response = await this.fetchData().deleteComment(commentId);

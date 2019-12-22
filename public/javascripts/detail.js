@@ -10,6 +10,11 @@ const DetailHandler = class {
   }
 
   async deletePostEvent() {
+    const isConfirmed = confirm("삭제하시겠습니까?");
+    if (!isConfirmed) {
+      this.isDeleted = false;
+      return;
+    }
     try {
       const response = await this.fetchData().deletePost(this.postId);
       if (response.status === 200) {
