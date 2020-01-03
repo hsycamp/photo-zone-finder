@@ -11,7 +11,8 @@ require("dotenv").config();
 const app = express();
 const checkJwt = require("./auth/check-jwt");
 const moment = require("moment");
-moment.locale('ko')
+moment.locale("ko");
+const mysqlConnet = require("./mysql_models");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -31,6 +32,8 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function() {
   console.log("Conneted mongoDB");
 });
+
+mysqlConnet();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
