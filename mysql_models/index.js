@@ -40,14 +40,16 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-const connect = async () => {
+const driver = async () => {
   try {
     await db.sequelize.sync();
-    console.log("Conneted MySQL");
+    console.log("Initialization complete.");
   } catch (error) {
-    console.error("connection error");
+    console.error("Initialization failed.");
     return process.exit(1);
   }
 };
 
-module.exports = connect;
+driver();
+
+module.exports = db;
