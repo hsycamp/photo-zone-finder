@@ -12,7 +12,7 @@ const app = express();
 const checkJwt = require("./auth/check-jwt");
 const moment = require("moment");
 moment.locale("ko");
-const mysqlDb = require("./mysql_models");
+const mysqlDb = require("./mysql-models");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
