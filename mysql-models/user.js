@@ -38,5 +38,11 @@ module.exports = (sequelize, DataTypes) => {
     { paranoid: true, tableName: "user" }
   );
 
+  User.associate = function(db) {
+    User.hasMany(db.Post, {
+      foreignKey: { name: "publisherId", allowNull: false }
+    });
+  };
+
   return User;
 };

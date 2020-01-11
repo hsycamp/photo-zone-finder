@@ -33,5 +33,9 @@ module.exports = (sequelize, DataTypes) => {
     { paranoid: true, tableName: "post" }
   );
 
+  Post.associate = function(db) {
+    Post.belongsTo(db.User, { foreignKey: "publisherId" });
+  };
+
   return Post;
 };
