@@ -25,14 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       authProvider: {
         type: DataTypes.STRING(45),
         allowNull: false
-      },
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE
       }
     },
     { paranoid: true, tableName: "user" }
