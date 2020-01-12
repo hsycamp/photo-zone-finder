@@ -42,6 +42,9 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(db.Post, {
       foreignKey: { name: "publisherId", allowNull: false }
     });
+    User.hasMany(db.Comment, {
+      foreignKey: { name: "publisherId", allowNull: false }
+    });
   };
 
   return User;

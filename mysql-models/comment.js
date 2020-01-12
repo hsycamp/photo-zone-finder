@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     { paranoid: true, tableName: "comment" }
   );
+  Comment.associate = function(db) {
+    Comment.belongsTo(db.Post, { foreignKey: "postId" });
+    Comment.belongsTo(db.User, { foreignKey: "publisherId" });
+  };
 
   return Comment;
 };
