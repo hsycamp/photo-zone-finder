@@ -44,12 +44,12 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(User, {
       as: "followers",
       through: "follow",
-      foreignKey: { name: "followerId", allowNull: false }
+      foreignKey: { name: "followingId", allowNull: false }
     });
     User.belongsToMany(User, {
       as: "followings",
       through: "follow",
-      foreignKey: { name: "followingId", allowNull: false }
+      foreignKey: { name: "followerId", allowNull: false }
     });
   };
 
