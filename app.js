@@ -13,13 +13,7 @@ const checkJwt = require("./auth/check-jwt");
 const moment = require("moment");
 moment.locale("ko");
 const mysqlDb = require("./mysql-models");
-
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
-const authRouter = require("./routes/auth");
-const postRouter = require("./routes/post");
-const detailRouter = require("./routes/detail");
-const commentRouter = require("./routes/comment");
+const routers = require("./routes");
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
@@ -64,12 +58,7 @@ AWS.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/auth", authRouter);
-app.use("/post", postRouter);
-app.use("/detail", detailRouter);
-app.use("/comment", commentRouter);
+app.use("/", routers);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

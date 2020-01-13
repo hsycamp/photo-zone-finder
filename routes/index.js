@@ -1,22 +1,17 @@
 const express = require("express");
-const asyncify = require("express-asyncify");
-const router = asyncify(express.Router());
-const { isLoggedIn, isNotLoggedIn } = require("../auth/auth");
-const indexController = require("../controller/index-controller");
+const router = express.Router();
+const mainRouter = require("./main");
+const usersRouter = require("./users");
+const authRouter = require("./auth");
+const postRouter = require("./post");
+const detailRouter = require("./detail");
+const commentRouter = require("./comment");
 
-/* GET home page. */
-router.get("/", isLoggedIn, indexController.getIndexPage);
-
-/* GET signIn page. */
-router.get("/sign-in", isNotLoggedIn, indexController.getSignInPage);
-
-/* GET signUP page. */
-router.get("/sign-up", isNotLoggedIn, indexController.getSignUpPage);
-
-/* GET user page */
-router.get("/user-page/:userName", isLoggedIn, indexController.getUserPage);
-
-/* GET post page */
-router.get("/post", isLoggedIn, indexController.getPostPage);
+router.use("/", mainRouter);
+router.use("/users", usersRouter);
+router.use("/auth", authRouter);
+router.use("/post", postRouter);
+router.use("/detail", detailRouter);
+router.use("/comment", commentRouter);
 
 module.exports = router;
