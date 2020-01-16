@@ -26,7 +26,7 @@ const userController = {
       authProvider
     };
     const user = await db.User.createUser(signUpData);
-    const userInfo = { _id: user._id, userName: user.userName };
+    const userInfo = { _id: user.id, userName: user.userName };
     await generateJwt(res, userInfo);
 
     return res.redirect("/sign-in");

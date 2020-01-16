@@ -16,7 +16,7 @@ const authController = {
       return res.redirect("/sign-in");
     }
 
-    const userInfo = { _id: user._id, userName: user.userName };
+    const userInfo = { _id: user.id, userName: user.userName };
     await generateJwt(res, userInfo);
 
     return res.redirect("/");
@@ -44,7 +44,7 @@ const authController = {
         return res.render("oauth-sign-up", { signUpData });
       }
 
-      const userInfo = { _id: user._id, userName: user.userName };
+      const userInfo = { _id: user.id, userName: user.userName };
       await generateJwt(res, userInfo);
 
       return res.redirect("/");
