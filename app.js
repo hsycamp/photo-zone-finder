@@ -12,7 +12,6 @@ const app = express();
 const checkJwt = require("./auth/check-jwt");
 const moment = require("moment");
 moment.locale("ko");
-const mysqlDb = require("./mysql-models");
 const routers = require("./routes");
 
 mongoose.connect(process.env.MONGODB_URI, {

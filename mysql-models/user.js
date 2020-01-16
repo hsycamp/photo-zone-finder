@@ -1,4 +1,7 @@
 "use strict";
+
+const bcrypt = require("bcrypt");
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
@@ -51,6 +54,42 @@ module.exports = (sequelize, DataTypes) => {
       through: "follow",
       foreignKey: { name: "followerId", allowNull: false }
     });
+  };
+
+  User.createUser = async function(signUpData) {
+    const { userId, userName, password, authProvider } = signUpData;
+    const newUser = await this.create({
+      userId,
+      userName,
+      password,
+      authProvider
+    });
+    return newUser;
+  };
+
+  User.findUser = async function(userId, authProvider) {
+    const user = await this.findOne({ where: { userId, authProvider } });
+    return user;
+  };
+
+  User.checkDuplicateUserId = async function(userId, authProvider) {
+    return await this.findOne({ where: { userId, authProvider } });
+  };
+
+  User.checkDuplicateUserName = async function(userName) {
+    return await this.findOne({ where: { userName } });
+  };
+
+  User.getUserData = async function(userName, models) {
+    const userData = await this.findOne({
+      where: { userName }
+    });
+    return userData;
+  };
+
+  User.prototype.checkPassword = async function(inputPassword) {
+    const isValidPassword = await bcrypt.compare(inputPassword, this.password);
+    return isValidPassword;
   };
 
   return User;
