@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     User.belongsToMany(db.Post, {
       through: "likePost",
+      as: "liked",
       foreignKey: { name: "userId", allowNull: false }
     });
     User.belongsToMany(User, {
@@ -80,9 +81,20 @@ module.exports = (sequelize, DataTypes) => {
     return await this.findOne({ where: { userName } });
   };
 
-  User.getUserData = async function(userName, models) {
-    const userData = await this.findOne({
-      where: { userName }
+  User.getUserData = async function(userName, db) {
+    const userData = await this.findAll({
+      raw: true,
+      where: { userName },
+      attributes: [
+        "userName",
+        "Posts.id",
+        "Posts.content",
+        "Posts.text",
+        "Posts.likes",
+        "Posts.createdAt"
+      ],
+      include: [{ model: db.Post, attributes: [] }],
+      order: [[db.Post, "createdAt", "DESC"]]
     });
     return userData;
   };
