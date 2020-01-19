@@ -37,6 +37,16 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
+  Post.createPost = async function(postData) {
+    const { content, text, userObjectId } = postData;
+    const newPost = await this.create({
+      content,
+      text,
+      publisherId: userObjectId
+    });
+    return newPost;
+  };
+
   Post.getAllPosts = async function() {
     const allPosts = await this.findAll({
       raw: true,
