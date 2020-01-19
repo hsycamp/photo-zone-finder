@@ -32,8 +32,17 @@ module.exports = (sequelize, DataTypes) => {
     });
     Post.belongsToMany(db.User, {
       through: "likePost",
+      as: "liker",
       foreignKey: { name: "postId", allowNull: false }
     });
+  };
+
+  Post.getAllPosts = async function() {
+    const allPosts = await this.findAll({
+      raw: true,
+      order: [["createdAt", "DESC"]]
+    });
+    return allPosts;
   };
 
   return Post;
