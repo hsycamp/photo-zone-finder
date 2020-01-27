@@ -15,5 +15,21 @@ module.exports = (sequelize, DataTypes) => {
     Comment.belongsTo(db.User, { foreignKey: "publisherId" });
   };
 
+  Comment.createComment = async function(commentData) {
+    const { text, postId, userObjectId } = commentData;
+    const newComment = await this.create({
+      postId,
+      text,
+      publisherId: userObjectId
+    });
+    return newComment;
+  };
+
+  Comment.deleteComment = async function(commentId) {
+    await this.destroy({
+      where: { id: commentId }
+    });
+  };
+
   return Comment;
 };
