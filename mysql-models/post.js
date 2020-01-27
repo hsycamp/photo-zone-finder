@@ -55,5 +55,49 @@ module.exports = (sequelize, DataTypes) => {
     return allPosts;
   };
 
+  Post.getPostWithCommentsByPostId = async function(postId, db) {
+    const post = await this.findAll({
+      raw: true,
+      where: { id: postId },
+      include: [
+        { model: db.User, attributes: ["id", "userName"] },
+        {
+          model: db.User,
+          through: "likePost",
+          as: "liker",
+          attributes: ["id"]
+        },
+        {
+          model: db.Comment,
+          attributes: ["id", "text", "createdAt"],
+          include: [{ model: db.User, attributes: ["userName"] }]
+        }
+      ]
+    });
+    return post;
+  };
+
+  Post.getPostByPostId = async function(postId) {
+    const post = await this.findOne({
+      where: { id: postId }
+    });
+    return post;
+  };
+
+  Post.updatePost = async function(postId, updateText) {
+    await this.update(
+      { text: updateText },
+      {
+        where: { id: postId }
+      }
+    );
+  };
+
+  Post.deletePost = async function(postId) {
+    await this.destroy({
+      where: { id: postId }
+    });
+  };
+
   return Post;
 };
