@@ -1,18 +1,18 @@
 
-if posts[0]["Comments.id"]
-    .ui.comments
-        for post in posts
-            .comment(id=post["Comments.id"])
+.ui.comments
+    if post[0]["Comments.id"]
+        for comment in post
+            .comment(id=comment["Comments.id"])
                 a.avatar
                     img(src='/images/avatar.png')
                 .content
-                    a.author(href=`/user-page/${post["Comments.User.userName"]}`)
-                        | #{post["Comments.User.userName"]}
+                    a.author(href=`/user-page/${comment["Comments.User.userName"]}`)
+                        | #{comment["Comments.User.userName"]}
                     span.right.floated   
-                        if post["Comments.User.id"] === user._id
+                        if comment["Comments.User.id"] === user._id
                             i#comment-delete-btn.trash.icon(style="cursor:pointer")
                     .text
-                        | #{post["Comments.text"]}
+                        | #{comment["Comments.text"]}
                     #published-date(style="color:#A2A2A2;font-size:12px;")
-                        | #{moment(post["Comments.createdAt"]).fromNow()}
+                        | #{moment(comment["Comments.createdAt"]).fromNow()}
                         

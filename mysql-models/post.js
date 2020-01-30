@@ -62,12 +62,6 @@ module.exports = (sequelize, DataTypes) => {
       include: [
         { model: db.User, attributes: ["id", "userName"] },
         {
-          model: db.User,
-          through: "likePost",
-          as: "liker",
-          attributes: ["id"]
-        },
-        {
           model: db.Comment,
           attributes: ["id", "text", "createdAt"],
           include: [{ model: db.User, attributes: ["userName"] }]
