@@ -8,9 +8,7 @@ const postController = {
       const text = req.body.text;
       const postData = { content, text, userObjectId };
       const post = await db.Post.createPost(postData);
-
-      // return res.redirect(`/detail/${post.id}`);
-      return res.redirect("/");
+      return res.redirect(`/detail/${post.id}`);
     } catch (error) {
       next(error);
     }
