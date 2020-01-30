@@ -5,7 +5,6 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
 const flash = require("connect-flash");
-const mongoose = require("mongoose");
 const AWS = require("aws-sdk");
 require("dotenv").config();
 const app = express();
@@ -13,18 +12,6 @@ const checkJwt = require("./auth/check-jwt");
 const moment = require("moment");
 moment.locale("ko");
 const routers = require("./routes");
-
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false
-});
-const db = mongoose.connection;
-
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function() {
-  console.log("Conneted mongoDB");
-});
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
