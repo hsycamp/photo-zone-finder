@@ -5,32 +5,13 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
 const flash = require("connect-flash");
-const mongoose = require("mongoose");
 const AWS = require("aws-sdk");
 require("dotenv").config();
 const app = express();
 const checkJwt = require("./auth/check-jwt");
 const moment = require("moment");
-moment.locale('ko')
-
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
-const authRouter = require("./routes/auth");
-const postRouter = require("./routes/post");
-const detailRouter = require("./routes/detail");
-const commentRouter = require("./routes/comment");
-
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false
-});
-const db = mongoose.connection;
-
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function() {
-  console.log("Conneted mongoDB");
-});
+moment.locale("ko");
+const routers = require("./routes");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -63,12 +44,7 @@ AWS.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/auth", authRouter);
-app.use("/post", postRouter);
-app.use("/detail", detailRouter);
-app.use("/comment", commentRouter);
+app.use("/", routers);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

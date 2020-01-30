@@ -1,12 +1,11 @@
-const Post = require("../models/post");
-const Comment = require("../models/comment");
+const db = require("../mysql-models");
 
 const commentController = {
   addComment: async (req, res) => {
     const userObjectId = req.user._id;
     const { text, postId } = req.body;
     const commentData = { text, postId, userObjectId };
-    const newCommentData = await Comment.createComment(commentData);
+    const newCommentData = await db.Comment.createComment(commentData);
     const addResult = { newCommentData, publisherName: req.user.userName };
 
     return res.json(addResult);
@@ -14,7 +13,7 @@ const commentController = {
 
   deleteComment: async (req, res) => {
     const commentId = req.params.commentId;
-    await Comment.deleteComment(commentId);
+    await db.Comment.deleteComment(commentId);
 
     return res.end();
   }

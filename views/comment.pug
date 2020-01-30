@@ -1,19 +1,18 @@
 
-if comments
-    .ui.comments
-        for comment in comments
-            if comment.display === true
-                .comment(id=comment._id)
-                    a.avatar
-                        img(src='/images/avatar.png')
-                    .content
-                        a.author(href=`/user-page/${comment.publisher.userName}`)
-                            | #{comment.publisher.userName}
-                        span.right.floated   
-                            if comment.publisher._id.toString() === user._id 
-                                i#comment-delete-btn.trash.icon(style="cursor:pointer")
-                        .text
-                            | #{comment.content}
-                        #published-date(style="color:#A2A2A2;font-size:12px;")
-                            | #{moment(comment.publishedDate).fromNow()}
+.ui.comments
+    if post[0]["Comments.id"]
+        for comment in post
+            .comment(id=comment["Comments.id"])
+                a.avatar
+                    img(src='/images/avatar.png')
+                .content
+                    a.author(href=`/user-page/${comment["Comments.User.userName"]}`)
+                        | #{comment["Comments.User.userName"]}
+                    span.right.floated   
+                        if comment["Comments.User.id"] === user._id
+                            i#comment-delete-btn.trash.icon(style="cursor:pointer")
+                    .text
+                        | #{comment["Comments.text"]}
+                    #published-date(style="color:#A2A2A2;font-size:12px;")
+                        | #{moment(comment["Comments.createdAt"]).fromNow()}
                         

@@ -1,5 +1,4 @@
-const User = require("../models/user");
-const Post = require("../models/post");
+const db = require("../mysql-models");
 
 const postController = {
   uploadImage: async (req, res, next) => {
@@ -8,10 +7,8 @@ const postController = {
       const userObjectId = req.user._id;
       const text = req.body.text;
       const postData = { content, text, userObjectId };
-      const post = await Post.createPost(postData);
-      await User.addPostId(userObjectId, post._id);
-
-      return res.redirect(`/detail/${post._id}`);
+      const post = await db.Post.createPost(postData);
+      return res.redirect(`/detail/${post.id}`);
     } catch (error) {
       next(error);
     }

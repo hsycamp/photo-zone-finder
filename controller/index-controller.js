@@ -1,9 +1,8 @@
-const Post = require("../models/post");
-const User = require("../models/user");
+const db = require("../mysql-models");
 
 const indexController = {
   getIndexPage: async (req, res) => {
-    const posts = await Post.getAllPosts();
+    const posts = await db.Post.getAllPosts();
     res.render("index", { user: req.user, posts: posts });
   },
   getSignInPage: (req, res) => {
@@ -30,7 +29,7 @@ const indexController = {
   },
   getUserPage: async (req, res) => {
     const userName = req.params.userName;
-    const userData = await User.getUserData(userName);
+    const userData = await db.User.getUserData(userName, db);
     const flashMessage = req.flash("message");
     res.render("user-page", {
       title: "유저 페이지",

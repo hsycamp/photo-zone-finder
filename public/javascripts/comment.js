@@ -37,7 +37,7 @@ const CommentHandler = class {
         this.commentBoard.insertAdjacentHTML("beforeend", newCommentElement);
         this.commentBox.value = "";
         const newDeleteButton = document
-          .getElementById(newCommentData._id)
+          .getElementById(newCommentData.id)
           .querySelector("#comment-delete-btn");
         newDeleteButton.addEventListener("click", event => {
           this.debouncedDeleteCommentEvent(event);
@@ -53,7 +53,7 @@ const CommentHandler = class {
   createCommentElement(newCommentData, publisherName) {
     moment.locale("ko");
     const commentElement = `
-    <div class="comment" id="${newCommentData._id}">
+    <div class="comment" id="${newCommentData.id}">
       <a class="avatar"><img src="/images/avatar.png"></a>
       <div class="content">
         <a class="author" href="/user-page/${publisherName}">
@@ -62,9 +62,9 @@ const CommentHandler = class {
         <span class="right floated">
           <i class="trash icon" id="comment-delete-btn" style="cursor:pointer"></i>
         </span>
-        <div class="text">${newCommentData.content}</div>
+        <div class="text">${newCommentData.text}</div>
         <div id="published-date" style="color:#A2A2A2;font-size:12px;">
-          ${moment(newCommentData.publishedDate).fromNow()}
+          ${moment(newCommentData.createdAt).fromNow()}
         </div>
       </div>
     </div>

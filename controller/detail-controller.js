@@ -1,25 +1,34 @@
-const Post = require("../models/post");
-const User = require("../models/user");
-const Comment = require("../models/comment");
+const db = require("../mysql-models");
 
 const detailController = {
   getDetailPage: async (req, res) => {
     const userObjectId = req.user._id;
     const postId = req.params.postId;
-    const islikedPost = await User.checkLikedPost(userObjectId, postId);
-    req.user.islikedPost = islikedPost;
-    const post = await Post.getPostByPostId(postId);
-    const comments = await Comment.getCommentsByPostId(postId);
+    const postWithComments = await db.Post.getPostWithCommentsByPostId(
+      postId,
+      db
+    );
+    const post = await db.Post.findOne({ where: { id: postId } });
+    const isLiker = await post.getLiker({
+      where: { id: userObjectId },
+      attributes: ["userName"]
+    });
+    req.user.islikedPost = isLiker.length === 1;
+
+    const likers = await post.getLiker({
+      attributes: ["userName"]
+    });
+
     res.render("detail-page", {
       user: req.user,
-      post,
-      comments
+      post: postWithComments,
+      likesCount: likers.length
     });
   },
 
   getUpdatePage: async (req, res) => {
     const postId = req.params.postId;
-    const post = await Post.getPostByPostId(postId);
+    const post = await db.Post.getPostByPostId(postId);
     const text = post.text;
     res.render("post-update", {
       user: req.user,
@@ -30,34 +39,46 @@ const detailController = {
   updatePost: async (req, res) => {
     const postId = req.params.postId;
     const updateText = req.body.updateText;
-    await Post.updatePost(postId, updateText);
+    await db.Post.updatePost(postId, updateText);
     return res.end();
   },
 
   deletePost: async (req, res) => {
     const postId = req.params.postId;
-    await Post.deletePost(postId);
+    await db.Post.deletePost(postId);
     return res.end();
   },
 
   updateLike: async (req, res) => {
-    const userObjectId = req.user;
+    const userObjectId = req.user._id;
     const postId = req.params.postId;
-    const islikedPost = await User.checkLikedPost(userObjectId, postId);
+    const post = await db.Post.findOne({ where: { id: postId } });
+    const isLiker = await post.getLiker({
+      raw: true,
+      where: { id: userObjectId },
+      attributes: ["userName"]
+    });
+    const islikedPost = isLiker.length === 1;
+
     if (islikedPost) {
-      const unLikedPost = await Post.unLikePost(postId);
-      await User.removeLikedPostId(userObjectId, unLikedPost._id);
+      await post.removeLiker(userObjectId);
+      const likers = await post.getLiker({
+        attributes: ["userName"]
+      });
       const updateResult = {
         updatedStatus: "unliked",
-        likesCount: unLikedPost.likes
+        likesCount: likers.length
       };
       return res.json(updateResult);
     }
-    const likedPost = await Post.likePost(postId);
-    await User.addLikedPostId(userObjectId, likedPost._id);
+
+    await post.addLiker(userObjectId);
+    const likers = await post.getLiker({
+      attributes: ["userName"]
+    });
     const updateResult = {
       updatedStatus: "liked",
-      likesCount: likedPost.likes
+      likesCount: likers.length
     };
     return res.json(updateResult);
   }

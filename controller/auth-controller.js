@@ -1,11 +1,11 @@
-const User = require("../models/user");
+const db = require("../mysql-models");
 const googleOauth = require("../auth/google-oauth");
 const generateJwt = require("../util/jwt-token-generator");
 
 const authController = {
   signIn: async (req, res, next) => {
     const { userId, password } = req.body;
-    const user = await User.findUser(userId, "local");
+    const user = await db.User.findUser(userId, "local");
     if (!user) {
       req.flash("message", "존재하지 않는 아이디입니다.");
       return res.redirect("/sign-in");
@@ -16,7 +16,7 @@ const authController = {
       return res.redirect("/sign-in");
     }
 
-    const userInfo = { _id: user._id, userName: user.userName };
+    const userInfo = { _id: user.id, userName: user.userName };
     await generateJwt(res, userInfo);
 
     return res.redirect("/");
@@ -37,14 +37,14 @@ const authController = {
 
       const email = me.data.emails[0].value;
       const googleId = email.split("@")[0];
-      const user = await User.findUser(googleId, "google");
+      const user = await db.User.findUser(googleId, "google");
 
       if (!user) {
         const signUpData = { userId: googleId, authProvider: "google" };
         return res.render("oauth-sign-up", { signUpData });
       }
 
-      const userInfo = { _id: user._id, userName: user.userName };
+      const userInfo = { _id: user.id, userName: user.userName };
       await generateJwt(res, userInfo);
 
       return res.redirect("/");

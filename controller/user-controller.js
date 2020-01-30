@@ -1,15 +1,15 @@
-const User = require("../models/user");
+const db = require("../mysql-models");
 const bcrypt = require("bcrypt");
 const generateJwt = require("../util/jwt-token-generator");
 
 const userController = {
   signUp: async (req, res, next) => {
     const { userId, userName, password, authProvider } = req.body;
-    const isDuplicateUserId = await User.checkDuplicateUserId(
+    const isDuplicateUserId = await db.User.checkDuplicateUserId(
       userId,
       authProvider
     );
-    const isDuplicateUserName = await User.checkDuplicateUserName(userName);
+    const isDuplicateUserName = await db.User.checkDuplicateUserName(userName);
     if (isDuplicateUserId) {
       req.flash("message", "이미 존재하는 아이디입니다.");
       return res.redirect("/sign-up");
@@ -25,8 +25,8 @@ const userController = {
       password: hashedPassword,
       authProvider
     };
-    const user = await User.createUser(signUpData);
-    const userInfo = { _id: user._id, userName: user.userName };
+    const user = await db.User.createUser(signUpData);
+    const userInfo = { _id: user.id, userName: user.userName };
     await generateJwt(res, userInfo);
 
     return res.redirect("/sign-in");
@@ -34,7 +34,7 @@ const userController = {
 
   checkDuplicateUserName: async (req, res, next) => {
     const userName = req.params.userName;
-    const isDuplicateUserName = await User.checkDuplicateUserName(userName);
+    const isDuplicateUserName = await db.User.checkDuplicateUserName(userName);
     if (isDuplicateUserName) {
       return res.send("duplicate");
     }
