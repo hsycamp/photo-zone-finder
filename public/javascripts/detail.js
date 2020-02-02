@@ -6,6 +6,7 @@ const DetailHandler = class {
     this.deleteButton = document.querySelector("#post-delete-btn");
     this.likeButton = document.querySelector("#post-like-btn");
     this.likesCount = document.querySelector("#likes-count");
+    this.likersBoard = document.querySelector(".ui.items");
     this.isDeleted = false;
   }
 
@@ -49,6 +50,54 @@ const DetailHandler = class {
     }
   }
 
+  async showLikersEvent() {
+    try {
+      const response = await this.fetchData().getLikers(this.postId);
+      if (response.status === 200) {
+        const likers = await response.json();
+        if (!likers.length) return;
+
+        this.resetLikersBoard();
+
+        likers.forEach(liker => {
+          const newlikerElement = this.createLikerElement(liker);
+          this.likersBoard.insertAdjacentHTML("beforeend", newlikerElement);
+        });
+        this.likesCount.innerText = `좋아요 ${likers.length} 개`;
+        $(".ui.longer.modal").modal("show");
+        return;
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  resetLikersBoard() {
+    while (this.likersBoard.firstChild) {
+      this.likersBoard.removeChild(this.likersBoard.firstChild);
+    }
+  }
+
+  createLikerElement(liker) {
+    const likerElement = `
+    <div class="item">
+      <a class="ui mini image">
+        <img src="/images/avatar.png" />
+      </a>
+      <div class="middle aligned content">
+        <a class="author" href="/user-page/${liker.userName}" style="color: #000;">
+          ${liker.userName}
+        </a>
+        <span class="right floated">
+          <button class="mini ui primary button">팔로우</button>
+        </span>
+      </div>
+    </div>
+    `;
+    return likerElement;
+  }
+
   addGetUpdatePageEvent() {
     if (this.updateButton) {
       this.updateButton.addEventListener("click", () => {
@@ -71,6 +120,12 @@ const DetailHandler = class {
   addLikeEvent() {
     this.likeButton.addEventListener("click", () => {
       this.updateLikeEvent();
+    });
+  }
+
+  addShowLikerListEvent() {
+    this.likesCount.addEventListener("click", () => {
+      this.showLikersEvent();
     });
   }
 
@@ -99,13 +154,26 @@ const DetailHandler = class {
       }
     };
 
-    return { deletePost, updateLike };
+    const getLikers = async postId => {
+      try {
+        const url = `/detail/like/${postId}`;
+        const response = await fetch(url, {
+          method: "GET"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+
+    return { deletePost, updateLike, getLikers };
   }
 
   run() {
     this.addDeleteEvent();
     this.addGetUpdatePageEvent();
     this.addLikeEvent();
+    this.addShowLikerListEvent();
   }
 };
 

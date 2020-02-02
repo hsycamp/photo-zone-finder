@@ -22,7 +22,7 @@ const detailController = {
     res.render("detail-page", {
       user: req.user,
       post: postWithComments,
-      likesCount: likers.length
+      likers
     });
   },
 
@@ -81,6 +81,15 @@ const detailController = {
       likesCount: likers.length
     };
     return res.json(updateResult);
+  },
+
+  getLikers: async (req, res) => {
+    const postId = req.params.postId;
+    const post = await db.Post.findOne({ where: { id: postId } });
+    const likers = await post.getLiker({
+      attributes: ["userName"]
+    });
+    return res.json(likers);
   }
 };
 

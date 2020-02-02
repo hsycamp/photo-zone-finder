@@ -1,0 +1,14 @@
+.ui.mini.longer.modal
+  .ui.center.aligned.header 좋아요
+  .scrolling.content
+    .ui.items
+        for liker in likers
+            .item(id=liker.userName)
+                a.ui.mini.image
+                    img(src='/images/avatar.png')
+                .middle.aligned.content
+                    a.author(href=`/user-page/${liker.userName}` style="color: #000;")
+                        | #{liker.userName}
+                    span.right.floated
+                        button.mini.ui.primary.button
+                            | 팔로우
