@@ -39,6 +39,25 @@ const userController = {
       return res.send("duplicate");
     }
     return res.send("unique");
+  },
+
+  addFollow: async (req, res, next) => {
+    const userObjectId = req.user._id;
+    const followingUserName = req.params.userName;
+    const user = await db.User.findOne({ where: { id: userObjectId } });
+    const targetUser = await db.User.findOne({
+      where: { userName: followingUserName }
+    });
+    await user.addFollowing(targetUser.id);
+    const followers = await targetUser.getFollowers({
+      attributes: ["userName"]
+    });
+    const updateResult = {
+      updatedStatus: "followed",
+      followersCount: followers.length
+    };
+
+    return res.json(updateResult);
   }
 };
 
