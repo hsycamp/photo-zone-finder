@@ -58,6 +58,25 @@ const userController = {
     };
 
     return res.json(updateResult);
+  },
+
+  removeFollow: async (req, res, next) => {
+    const userObjectId = req.user._id;
+    const followingUserName = req.params.userName;
+    const user = await db.User.findOne({ where: { id: userObjectId } });
+    const targetUser = await db.User.findOne({
+      where: { userName: followingUserName }
+    });
+    await user.removeFollowing(targetUser.id);
+    const followers = await targetUser.getFollowers({
+      attributes: ["userName"]
+    });
+    const updateResult = {
+      updatedStatus: "unfollowed",
+      followersCount: followers.length
+    };
+
+    return res.json(updateResult);
   }
 };
 

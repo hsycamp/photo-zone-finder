@@ -7,12 +7,24 @@ const ProfileHandler = class {
 
   async followUserEvent() {
     try {
-      const response = await this.fetchData().followUser(this.targetUserName);
+      let response;
+      if (this.followButton.innerText === "팔로우") {
+        response = await this.fetchData().followUser(this.targetUserName);
+      }
+      if (this.followButton.innerText === "팔로잉") {
+        response = await this.fetchData().unfollowUser(this.targetUserName);
+      }
       if (response.status === 200) {
         const updateResult = await response.json();
         if (updateResult.updatedStatus === "followed") {
           this.followButton.className = "medium ui basic button";
           this.followButton.innerText = "팔로잉";
+          this.followersCount.innerText = `팔로워 ${updateResult.followersCount}`;
+          return;
+        }
+        if (updateResult.updatedStatus === "unfollowed") {
+          this.followButton.className = "medium ui primary button";
+          this.followButton.innerText = "팔로우";
           this.followersCount.innerText = `팔로워 ${updateResult.followersCount}`;
           return;
         }
@@ -41,7 +53,18 @@ const ProfileHandler = class {
         throw error;
       }
     };
-    return { followUser };
+    const unfollowUser = async userName => {
+      try {
+        const url = `/users/follow/${userName}`;
+        const response = await fetch(url, {
+          method: "DELETE"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+    return { followUser, unfollowUser };
   }
 
   run() {

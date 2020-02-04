@@ -8,5 +8,6 @@ const userController = require("../controller/user-controller");
 router.post("/", isNotLoggedIn, userController.signUp);
 router.get("/:userName", isNotLoggedIn, userController.checkDuplicateUserName);
 router.post("/follow/:userName", isLoggedIn, userController.addFollow);
+router.delete("/follow/:userName", isLoggedIn, userController.removeFollow);
 
 module.exports = router;
