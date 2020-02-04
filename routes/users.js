@@ -9,5 +9,6 @@ router.post("/", isNotLoggedIn, userController.signUp);
 router.get("/:userName", isNotLoggedIn, userController.checkDuplicateUserName);
 router.post("/follow/:userName", isLoggedIn, userController.addFollow);
 router.delete("/follow/:userName", isLoggedIn, userController.removeFollow);
+router.get("/followers/:userName", isLoggedIn, userController.getFollowers);
 
 module.exports = router;

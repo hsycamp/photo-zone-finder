@@ -18,8 +18,9 @@
                 .column(style="font-size:20px;text-align:center")
                     span(style="margin-right:30px")
                         | 게시물 #{userData.posts.length}
-                    span#followers-count(style="margin-right:30px")
+                    span#followers-count(style="margin-right:30px;cursor:pointer")
                         | 팔로워 #{userData.followersCount}
+                    include follower-list
                     span#followings-count(style="margin-right:30px")
                         | 팔로우 #{userData.followingsCount}
 
