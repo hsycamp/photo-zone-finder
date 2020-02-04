@@ -29,12 +29,20 @@ const indexController = {
   },
   getUserPage: async (req, res) => {
     const userName = req.params.userName;
-    const rawUserData = await db.User.getUserData(userName, db);
+    const { Posts, followers, followings } = await db.User.getUserData(
+      userName,
+      db
+    );
+
+    const isFollowing =
+      followers.filter(follower => follower.id === req.user._id).length !== 0;
+
     const userData = {
-      userName: rawUserData.userName,
-      posts: rawUserData.Posts,
-      followersCount: rawUserData.followers.length,
-      followingsCount: rawUserData.followings.length
+      userName,
+      posts: Posts,
+      isFollowing,
+      followersCount: followers.length,
+      followingsCount: followings.length
     };
     const flashMessage = req.flash("message");
     res.render("user-page", {
