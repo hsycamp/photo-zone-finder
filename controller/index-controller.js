@@ -29,10 +29,15 @@ const indexController = {
   },
   getUserPage: async (req, res) => {
     const userName = req.params.userName;
-    const userData = await db.User.getUserData(userName, db);
+    const rawUserData = await db.User.getUserData(userName, db);
+    const userData = {
+      userName: rawUserData.userName,
+      posts: rawUserData.Posts,
+      followersCount: rawUserData.followers.length,
+      followingsCount: rawUserData.followings.length
+    };
     const flashMessage = req.flash("message");
     res.render("user-page", {
-      title: "유저 페이지",
       user: req.user,
       userData,
       errorMessage: flashMessage

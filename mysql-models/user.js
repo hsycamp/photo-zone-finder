@@ -82,18 +82,22 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   User.getUserData = async function(userName, db) {
-    const userData = await this.findAll({
-      raw: true,
+    const userData = await this.findOne({
       where: { userName },
-      attributes: [
-        "userName",
-        "Posts.id",
-        "Posts.content",
-        "Posts.text",
-        "Posts.likes",
-        "Posts.createdAt"
+      attributes: ["userName"],
+      include: [
+        { model: db.Post, attributes: ["id", "content", "text", "createdAt"] },
+        {
+          model: db.User,
+          as: "followings",
+          attributes: ["id"]
+        },
+        {
+          model: db.User,
+          as: "followers",
+          attributes: ["id"]
+        }
       ],
-      include: [{ model: db.Post, attributes: [] }],
       order: [[db.Post, "createdAt", "DESC"]]
     });
     return userData;
