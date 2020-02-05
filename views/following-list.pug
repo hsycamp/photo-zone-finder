@@ -1,0 +1,15 @@
+#followings-list.ui.mini.longer.modal
+  .ui.center.aligned.header 팔로잉
+  .scrolling.content
+    #followings-board.ui.items
+        if followings
+            for following in followings
+                .item(id=following.userName)
+                    a.ui.mini.image
+                        img(src='/images/avatar.png')
+                    .middle.aligned.content
+                        a.author(href=`/user-page/${following.userName}` style="color: #000;")
+                            | #{following.userName}
+                        span.right.floated
+                            button.mini.ui.primary.button
+                                | 팔로우

@@ -88,6 +88,17 @@ const userController = {
       attributes: ["userName"]
     });
     return res.json(followers);
+  },
+
+  getFollowings: async (req, res, next) => {
+    const targetUserName = req.params.userName;
+    const targetUser = await db.User.findOne({
+      where: { userName: targetUserName }
+    });
+    const followings = await targetUser.getFollowings({
+      attributes: ["userName"]
+    });
+    return res.json(followings);
   }
 };
 

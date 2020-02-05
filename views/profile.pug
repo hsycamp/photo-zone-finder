@@ -21,7 +21,8 @@
                     span#followers-count(style="margin-right:30px;cursor:pointer")
                         | 팔로워 #{userData.followersCount}
                     include follower-list
-                    span#followings-count(style="margin-right:30px")
+                    span#followings-count(style="margin-right:30px;cursor:pointer")
                         | 팔로우 #{userData.followingsCount}
+                    include following-list
 
 script(src='/javascripts/profile.js')

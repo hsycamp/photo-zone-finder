@@ -3,7 +3,7 @@ const ProfileHandler = class {
     this.targetUserName = document.querySelector("#target-user").innerText;
     this.followButton = document.querySelector("#follow-btn");
     this.followersCount = document.querySelector("#followers-count");
-    this.followersBoard = document.querySelector("#follower-board");
+    this.followingsCount = document.querySelector("#followings-count");
   }
 
   async followUserEvent() {
@@ -36,25 +36,33 @@ const ProfileHandler = class {
     }
   }
 
-  async showFollowersEvent() {
+  async showUserListEvent(listType) {
     try {
-      const response = await this.fetchData().getFollowers(this.targetUserName);
+      const userBoard = document.querySelector(`#${listType}-board`);
+      const userCount = document.querySelector(`#${listType}-count`);
+      const response = await this.fetchData().getUsers(
+        listType,
+        this.targetUserName
+      );
       if (response.status === 200) {
-        const followers = await response.json();
-        if (!followers.length) return;
+        const users = await response.json();
+        if (!users.length) return;
 
-        this.resetFollowersBoard();
+        this.resetUserBoard(userBoard);
 
-        followers.forEach(follower => {
-          const newFollowerElement = this.createFollowerElement(follower);
-          this.followersBoard.insertAdjacentHTML(
-            "beforeend",
-            newFollowerElement
-          );
+        users.forEach(user => {
+          const newUserElement = this.createUserElement(user);
+          userBoard.insertAdjacentHTML("beforeend", newUserElement);
         });
-        this.followersCount.innerText = `팔로워 ${followers.length}`;
-        $("#follower-list").modal("show");
-        return;
+        $(`#${listType}-list`).modal("show");
+        if (listType === "followers") {
+          userCount.innerText = `팔로워 ${users.length}`;
+          return;
+        }
+        if (listType === "followings") {
+          userCount.innerText = `팔로우 ${users.length}`;
+          return;
+        }
       }
       throw new Error("서버에 문제가 발생했습니다.");
     } catch (error) {
@@ -62,21 +70,21 @@ const ProfileHandler = class {
     }
   }
 
-  resetFollowersBoard() {
-    while (this.followersBoard.firstChild) {
-      this.followersBoard.removeChild(this.followersBoard.firstChild);
+  resetUserBoard(userBoard) {
+    while (userBoard.firstChild) {
+      userBoard.removeChild(userBoard.firstChild);
     }
   }
 
-  createFollowerElement(follower) {
-    const followerElement = `
+  createUserElement(user) {
+    const userElement = `
     <div class="item">
       <a class="ui mini image">
         <img src="/images/avatar.png" />
       </a>
       <div class="middle aligned content">
-        <a class="author" href="/user-page/${follower.userName}" style="color: #000;">
-          ${follower.userName}
+        <a class="author" href="/user-page/${user.userName}" style="color: #000;">
+          ${user.userName}
         </a>
         <span class="right floated">
           <button class="mini ui primary button">팔로우</button>
@@ -84,7 +92,7 @@ const ProfileHandler = class {
       </div>
     </div>
     `;
-    return followerElement;
+    return userElement;
   }
 
   addFollowUserEvent() {
@@ -96,7 +104,12 @@ const ProfileHandler = class {
 
   addShowFollowerListEvent() {
     this.followersCount.addEventListener("click", () => {
-      this.showFollowersEvent();
+      this.showUserListEvent("followers");
+    });
+  }
+  addShowFollowingListEvent() {
+    this.followingsCount.addEventListener("click", () => {
+      this.showUserListEvent("followings");
     });
   }
 
@@ -124,9 +137,9 @@ const ProfileHandler = class {
       }
     };
 
-    const getFollowers = async userName => {
+    const getUsers = async (listType, userName) => {
       try {
-        const url = `/users/followers/${userName}`;
+        const url = `/users/${listType}/${userName}`;
         const response = await fetch(url, {
           method: "GET"
         });
@@ -135,12 +148,14 @@ const ProfileHandler = class {
         throw error;
       }
     };
-    return { followUser, unfollowUser, getFollowers };
+
+    return { followUser, unfollowUser, getUsers };
   }
 
   run() {
     this.addFollowUserEvent();
     this.addShowFollowerListEvent();
+    this.addShowFollowingListEvent();
   }
 };
 
