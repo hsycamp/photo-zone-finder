@@ -82,23 +82,51 @@ const userController = {
   getFollowers: async (req, res, next) => {
     const targetUserName = req.params.userName;
     const targetUser = await db.User.findOne({
-      where: { userName: targetUserName }
+      attributes: [],
+      where: { userName: targetUserName },
+      include: [
+        {
+          model: db.User,
+          as: "followers",
+          attributes: ["userName"],
+          include: [
+            {
+              model: db.User,
+              as: "followers",
+              attributes: ["userName"],
+              where: { id: req.user._id },
+              required: false
+            }
+          ]
+        }
+      ]
     });
-    const followers = await targetUser.getFollowers({
-      attributes: ["userName"]
-    });
-    return res.json(followers);
+    return res.json(targetUser.followers);
   },
 
   getFollowings: async (req, res, next) => {
     const targetUserName = req.params.userName;
     const targetUser = await db.User.findOne({
-      where: { userName: targetUserName }
+      attributes: [],
+      where: { userName: targetUserName },
+      include: [
+        {
+          model: db.User,
+          as: "followings",
+          attributes: ["userName"],
+          include: [
+            {
+              model: db.User,
+              as: "followers",
+              attributes: ["userName"],
+              where: { id: req.user._id },
+              required: false
+            }
+          ]
+        }
+      ]
     });
-    const followings = await targetUser.getFollowings({
-      attributes: ["userName"]
-    });
-    return res.json(followings);
+    return res.json(targetUser.followings);
   }
 };
 

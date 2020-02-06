@@ -1,5 +1,6 @@
 const ProfileHandler = class {
   constructor() {
+    this.userName = document.querySelector("#user-name").innerText;
     this.targetUserName = document.querySelector("#target-user").innerText;
     this.followButton = document.querySelector("#follow-btn");
     this.followersCount = document.querySelector("#followers-count");
@@ -51,8 +52,22 @@ const ProfileHandler = class {
         this.resetUserBoard(userBoard);
 
         users.forEach(user => {
-          const newUserElement = this.createUserElement(user);
+          let newUserElement;
+          if (user.followers.length) {
+            newUserElement = this.createFollowingUserElement(user);
+          } else if (user.userName !== this.userName) {
+            newUserElement = this.createNotFollowingUserElement(user);
+          } else {
+            newUserElement = this.createUserElement(user);
+          }
           userBoard.insertAdjacentHTML("beforeend", newUserElement);
+        });
+
+        const followButtons = userBoard.querySelectorAll("#list-follow-btn");
+        followButtons.forEach(button => {
+          button.addEventListener("click", event => {
+            this.followListUserEvent(event);
+          });
         });
         $(`#${listType}-list`).modal("show");
         if (listType === "followers") {
@@ -63,6 +78,7 @@ const ProfileHandler = class {
           userCount.innerText = `팔로우 ${users.length}`;
           return;
         }
+        return;
       }
       throw new Error("서버에 문제가 발생했습니다.");
     } catch (error) {
@@ -76,9 +92,9 @@ const ProfileHandler = class {
     }
   }
 
-  createUserElement(user) {
-    const userElement = `
-    <div class="item">
+  createFollowingUserElement(user) {
+    const followingUserElement = `
+    <div class="item" id="${user.userName}">
       <a class="ui mini image">
         <img src="/images/avatar.png" />
       </a>
@@ -87,12 +103,78 @@ const ProfileHandler = class {
           ${user.userName}
         </a>
         <span class="right floated">
-          <button class="mini ui primary button">팔로우</button>
+          <button class="mini ui basic button" id="list-follow-btn">팔로잉</button>
         </span>
       </div>
     </div>
     `;
+    return followingUserElement;
+  }
+
+  createNotFollowingUserElement(user) {
+    const notFollowingUserElement = `
+    <div class="item" id="${user.userName}">
+      <a class="ui mini image">
+        <img src="/images/avatar.png" />
+      </a>
+      <div class="middle aligned content">
+        <a class="author" href="/user-page/${user.userName}" style="color: #000;">
+          ${user.userName}
+        </a>
+        <span class="right floated">
+          <button class="mini ui primary button" id="list-follow-btn">팔로우</button>
+        </span>
+      </div>
+    </div>
+    `;
+    return notFollowingUserElement;
+  }
+
+  createUserElement(user) {
+    const userElement = `
+    <div class="item" id="${user.userName}">
+      <a class="ui mini image">
+        <img src="/images/avatar.png" />
+      </a>
+      <div class="middle aligned content">
+        <a class="author" href="/user-page/${user.userName}" style="color: #000;">
+          ${user.userName}
+        </a>
+      </div>
+    </div>
+    `;
     return userElement;
+  }
+
+  async followListUserEvent(event) {
+    const followButton = event.target;
+    const targetUserName = event.target.parentNode.parentNode.parentNode.id;
+
+    try {
+      let response;
+      if (followButton.innerText === "팔로우") {
+        response = await this.fetchData().followUser(targetUserName);
+      }
+      if (followButton.innerText === "팔로잉") {
+        response = await this.fetchData().unfollowUser(targetUserName);
+      }
+      if (response.status === 200) {
+        const updateResult = await response.json();
+        if (updateResult.updatedStatus === "followed") {
+          followButton.className = "mini ui basic button";
+          followButton.innerText = "팔로잉";
+          return;
+        }
+        if (updateResult.updatedStatus === "unfollowed") {
+          followButton.className = "mini ui primary button";
+          followButton.innerText = "팔로우";
+          return;
+        }
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
   addFollowUserEvent() {
