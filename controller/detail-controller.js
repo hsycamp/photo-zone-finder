@@ -22,7 +22,7 @@ const detailController = {
     res.render("detail-page", {
       user: req.user,
       post: postWithComments,
-      likers
+      likersCount: likers.length
     });
   },
 
@@ -85,11 +85,27 @@ const detailController = {
 
   getLikers: async (req, res) => {
     const postId = req.params.postId;
-    const post = await db.Post.findOne({ where: { id: postId } });
-    const likers = await post.getLiker({
-      attributes: ["userName"]
+    const post = await db.Post.findOne({
+      attributes: [],
+      where: { id: postId },
+      include: [
+        {
+          model: db.User,
+          as: "liker",
+          attributes: ["userName"],
+          include: [
+            {
+              model: db.User,
+              as: "followers",
+              attributes: ["userName"],
+              where: { id: req.user._id },
+              required: false
+            }
+          ]
+        }
+      ]
     });
-    return res.json(likers);
+    return res.json(post.liker);
   }
 };
 

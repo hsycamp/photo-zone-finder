@@ -60,8 +60,21 @@ const DetailHandler = class {
         this.resetLikersBoard();
 
         likers.forEach(liker => {
-          const newlikerElement = this.createLikerElement(liker);
+          let newlikerElement;
+          if (liker.followers.length) {
+            newlikerElement = this.createFollowingLikerElement(liker);
+          } else if (liker.userName !== this.userName) {
+            newlikerElement = this.createNotFollowingLikerElement(liker);
+          } else {
+            newlikerElement = this.createLikerElement(liker);
+          }
           this.likersBoard.insertAdjacentHTML("beforeend", newlikerElement);
+        });
+        const followButtons = document.querySelectorAll("#list-follow-btn");
+        followButtons.forEach(button => {
+          button.addEventListener("click", event => {
+            this.followUserEvent(event);
+          });
         });
         this.likesCount.innerText = `좋아요 ${likers.length} 개`;
         $(".ui.longer.modal").modal("show");
@@ -79,9 +92,9 @@ const DetailHandler = class {
     }
   }
 
-  createLikerElement(liker) {
-    const likerElement = `
-    <div class="item">
+  createFollowingLikerElement(liker) {
+    const followingLikerElement = `
+    <div class="item" id="${liker.userName}">
       <a class="ui mini image">
         <img src="/images/avatar.png" />
       </a>
@@ -90,12 +103,78 @@ const DetailHandler = class {
           ${liker.userName}
         </a>
         <span class="right floated">
-          <button class="mini ui primary button">팔로우</button>
+          <button class="mini ui basic button" id="list-follow-btn">팔로잉</button>
         </span>
       </div>
     </div>
     `;
+    return followingLikerElement;
+  }
+
+  createNotFollowingLikerElement(liker) {
+    const notFollowingLikerElement = `
+    <div class="item" id="${liker.userName}">
+      <a class="ui mini image">
+        <img src="/images/avatar.png" />
+      </a>
+      <div class="middle aligned content">
+        <a class="author" href="/user-page/${liker.userName}" style="color: #000;">
+          ${liker.userName}
+        </a>
+        <span class="right floated">
+          <button class="mini ui primary button" id="list-follow-btn">팔로우</button>
+        </span>
+      </div>
+    </div>
+    `;
+    return notFollowingLikerElement;
+  }
+
+  createLikerElement(liker) {
+    const likerElement = `
+    <div class="item" id="${liker.userName}">
+      <a class="ui mini image">
+        <img src="/images/avatar.png" />
+      </a>
+      <div class="middle aligned content">
+        <a class="author" href="/user-page/${liker.userName}" style="color: #000;">
+          ${liker.userName}
+        </a>
+      </div>
+    </div>
+    `;
     return likerElement;
+  }
+
+  async followUserEvent(event) {
+    const followButton = event.target;
+    const targetUserName = event.target.parentNode.parentNode.parentNode.id;
+
+    try {
+      let response;
+      if (followButton.innerText === "팔로우") {
+        response = await this.fetchData().followUser(targetUserName);
+      }
+      if (followButton.innerText === "팔로잉") {
+        response = await this.fetchData().unfollowUser(targetUserName);
+      }
+      if (response.status === 200) {
+        const updateResult = await response.json();
+        if (updateResult.updatedStatus === "followed") {
+          followButton.className = "mini ui basic button";
+          followButton.innerText = "팔로잉";
+          return;
+        }
+        if (updateResult.updatedStatus === "unfollowed") {
+          followButton.className = "mini ui primary button";
+          followButton.innerText = "팔로우";
+          return;
+        }
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
   addGetUpdatePageEvent() {
@@ -166,7 +245,31 @@ const DetailHandler = class {
       }
     };
 
-    return { deletePost, updateLike, getLikers };
+    const followUser = async userName => {
+      try {
+        const url = `/users/follow/${userName}`;
+        const response = await fetch(url, {
+          method: "POST"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+
+    const unfollowUser = async userName => {
+      try {
+        const url = `/users/follow/${userName}`;
+        const response = await fetch(url, {
+          method: "DELETE"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+
+    return { deletePost, updateLike, getLikers, followUser, unfollowUser };
   }
 
   run() {
