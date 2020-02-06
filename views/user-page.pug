@@ -3,16 +3,24 @@ extends layout
 block content
 
   include header
-  
+
   .ui.center.aligned.grid(style="padding-top:150px")
-    .cloumn(style="width: 600px")
-      if userData[0].userName === user.userName
+    .ui.cloumn(style="width: 600px")
+      include profile
+
+  if userData.userName === user.userName
+    .ui.center.aligned.grid(style="padding-top:50px")
+      .cloumn(style="width: 600px")
         a.ui.basic.button(href="/post",style="margin-top:10px; height : 40px ;width:100%")
           i.camera.icon
           span 업로드
   
   .ui.three.column.grid(style="width: 70%;padding-top:100px;margin: 0 auto")
-    if userData[0].content
-      for post in userData
+    if userData.posts
+      for post in userData.posts
         .column
           include card
+    else
+      .column
+      .column(style="font-size:30px;text-align:center")
+        |게시물이 없습니다.

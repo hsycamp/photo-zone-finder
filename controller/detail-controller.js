@@ -22,7 +22,7 @@ const detailController = {
     res.render("detail-page", {
       user: req.user,
       post: postWithComments,
-      likesCount: likers.length
+      likersCount: likers.length
     });
   },
 
@@ -81,6 +81,31 @@ const detailController = {
       likesCount: likers.length
     };
     return res.json(updateResult);
+  },
+
+  getLikers: async (req, res) => {
+    const postId = req.params.postId;
+    const post = await db.Post.findOne({
+      attributes: [],
+      where: { id: postId },
+      include: [
+        {
+          model: db.User,
+          as: "liker",
+          attributes: ["userName"],
+          include: [
+            {
+              model: db.User,
+              as: "followers",
+              attributes: ["userName"],
+              where: { id: req.user._id },
+              required: false
+            }
+          ]
+        }
+      ]
+    });
+    return res.json(post.liker);
   }
 };
 

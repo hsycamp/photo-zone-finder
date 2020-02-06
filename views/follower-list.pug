@@ -1,0 +1,15 @@
+#followers-list.ui.mini.longer.modal
+  .ui.center.aligned.header 팔로우
+  .scrolling.content
+    #followers-board.ui.items
+        if followers
+            for follower in followers
+                .item(id=follower.userName)
+                    a.ui.mini.image
+                        img(src='/images/avatar.png')
+                    .middle.aligned.content
+                        a.author(href=`/user-page/${follower.userName}` style="color: #000;")
+                            | #{follower.userName}
+                        span.right.floated
+                            button.mini.ui.primary.button
+                                | 팔로우

@@ -29,10 +29,23 @@ const indexController = {
   },
   getUserPage: async (req, res) => {
     const userName = req.params.userName;
-    const userData = await db.User.getUserData(userName, db);
+    const { Posts, followers, followings } = await db.User.getUserData(
+      userName,
+      db
+    );
+
+    const isFollowing =
+      followers.filter(follower => follower.id === req.user._id).length !== 0;
+
+    const userData = {
+      userName,
+      posts: Posts,
+      isFollowing,
+      followersCount: followers.length,
+      followingsCount: followings.length
+    };
     const flashMessage = req.flash("message");
     res.render("user-page", {
-      title: "유저 페이지",
       user: req.user,
       userData,
       errorMessage: flashMessage

@@ -6,6 +6,7 @@ const DetailHandler = class {
     this.deleteButton = document.querySelector("#post-delete-btn");
     this.likeButton = document.querySelector("#post-like-btn");
     this.likesCount = document.querySelector("#likes-count");
+    this.likersBoard = document.querySelector(".ui.items");
     this.isDeleted = false;
   }
 
@@ -49,6 +50,133 @@ const DetailHandler = class {
     }
   }
 
+  async showLikersEvent() {
+    try {
+      const response = await this.fetchData().getLikers(this.postId);
+      if (response.status === 200) {
+        const likers = await response.json();
+        if (!likers.length) return;
+
+        this.resetLikersBoard();
+
+        likers.forEach(liker => {
+          let newlikerElement;
+          if (liker.followers.length) {
+            newlikerElement = this.createFollowingLikerElement(liker);
+          } else if (liker.userName !== this.userName) {
+            newlikerElement = this.createNotFollowingLikerElement(liker);
+          } else {
+            newlikerElement = this.createLikerElement(liker);
+          }
+          this.likersBoard.insertAdjacentHTML("beforeend", newlikerElement);
+        });
+        const followButtons = document.querySelectorAll("#list-follow-btn");
+        followButtons.forEach(button => {
+          button.addEventListener("click", event => {
+            this.followUserEvent(event);
+          });
+        });
+        this.likesCount.innerText = `좋아요 ${likers.length} 개`;
+        $(".ui.longer.modal").modal("show");
+        return;
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  resetLikersBoard() {
+    while (this.likersBoard.firstChild) {
+      this.likersBoard.removeChild(this.likersBoard.firstChild);
+    }
+  }
+
+  createFollowingLikerElement(liker) {
+    const followingLikerElement = `
+    <div class="item" id="${liker.userName}">
+      <a class="ui mini image">
+        <img src="/images/avatar.png" />
+      </a>
+      <div class="middle aligned content">
+        <a class="author" href="/user-page/${liker.userName}" style="color: #000;">
+          ${liker.userName}
+        </a>
+        <span class="right floated">
+          <button class="mini ui basic button" id="list-follow-btn">팔로잉</button>
+        </span>
+      </div>
+    </div>
+    `;
+    return followingLikerElement;
+  }
+
+  createNotFollowingLikerElement(liker) {
+    const notFollowingLikerElement = `
+    <div class="item" id="${liker.userName}">
+      <a class="ui mini image">
+        <img src="/images/avatar.png" />
+      </a>
+      <div class="middle aligned content">
+        <a class="author" href="/user-page/${liker.userName}" style="color: #000;">
+          ${liker.userName}
+        </a>
+        <span class="right floated">
+          <button class="mini ui primary button" id="list-follow-btn">팔로우</button>
+        </span>
+      </div>
+    </div>
+    `;
+    return notFollowingLikerElement;
+  }
+
+  createLikerElement(liker) {
+    const likerElement = `
+    <div class="item" id="${liker.userName}">
+      <a class="ui mini image">
+        <img src="/images/avatar.png" />
+      </a>
+      <div class="middle aligned content">
+        <a class="author" href="/user-page/${liker.userName}" style="color: #000;">
+          ${liker.userName}
+        </a>
+      </div>
+    </div>
+    `;
+    return likerElement;
+  }
+
+  async followUserEvent(event) {
+    const followButton = event.target;
+    const targetUserName = event.target.parentNode.parentNode.parentNode.id;
+
+    try {
+      let response;
+      if (followButton.innerText === "팔로우") {
+        response = await this.fetchData().followUser(targetUserName);
+      }
+      if (followButton.innerText === "팔로잉") {
+        response = await this.fetchData().unfollowUser(targetUserName);
+      }
+      if (response.status === 200) {
+        const updateResult = await response.json();
+        if (updateResult.updatedStatus === "followed") {
+          followButton.className = "mini ui basic button";
+          followButton.innerText = "팔로잉";
+          return;
+        }
+        if (updateResult.updatedStatus === "unfollowed") {
+          followButton.className = "mini ui primary button";
+          followButton.innerText = "팔로우";
+          return;
+        }
+      }
+      throw new Error("서버에 문제가 발생했습니다.");
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
   addGetUpdatePageEvent() {
     if (this.updateButton) {
       this.updateButton.addEventListener("click", () => {
@@ -71,6 +199,12 @@ const DetailHandler = class {
   addLikeEvent() {
     this.likeButton.addEventListener("click", () => {
       this.updateLikeEvent();
+    });
+  }
+
+  addShowLikerListEvent() {
+    this.likesCount.addEventListener("click", () => {
+      this.showLikersEvent();
     });
   }
 
@@ -99,13 +233,50 @@ const DetailHandler = class {
       }
     };
 
-    return { deletePost, updateLike };
+    const getLikers = async postId => {
+      try {
+        const url = `/detail/like/${postId}`;
+        const response = await fetch(url, {
+          method: "GET"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+
+    const followUser = async userName => {
+      try {
+        const url = `/users/follow/${userName}`;
+        const response = await fetch(url, {
+          method: "POST"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+
+    const unfollowUser = async userName => {
+      try {
+        const url = `/users/follow/${userName}`;
+        const response = await fetch(url, {
+          method: "DELETE"
+        });
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+
+    return { deletePost, updateLike, getLikers, followUser, unfollowUser };
   }
 
   run() {
     this.addDeleteEvent();
     this.addGetUpdatePageEvent();
     this.addLikeEvent();
+    this.addShowLikerListEvent();
   }
 };
 

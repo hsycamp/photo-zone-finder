@@ -1,0 +1,20 @@
+.ui.mini.longer.modal
+  .ui.center.aligned.header 좋아요
+  .scrolling.content
+    .ui.items
+        if likers
+            for liker in likers
+                .item(id=liker.userName)
+                    a.ui.mini.image
+                        img(src='/images/avatar.png')
+                    .middle.aligned.content
+                        a.author(href=`/user-page/${liker.userName}` style="color: #000;")
+                            | #{liker.userName}
+                        if liker.userName !== user.userName
+                            if liker.followers.length
+                                button#follow-btn.ui.basic.button
+                                        | 팔로잉
+                            else
+                                span.right.floated
+                                    button.mini.ui.primary.button
+                                        | 팔로우

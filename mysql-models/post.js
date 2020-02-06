@@ -15,11 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       text: {
         type: DataTypes.TEXT
-      },
-      likes: {
-        allowNull: false,
-        type: DataTypes.INTEGER(5),
-        defaultValue: "0"
       }
     },
     { paranoid: true, tableName: "post" }

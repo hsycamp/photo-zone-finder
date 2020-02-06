@@ -1,0 +1,28 @@
+.ui.internally.celled.grid
+    .row
+        .six.wide.column
+            img(src='/images/avatar.png')
+        .ten.wide.column
+            .row(style="margin-left:20px" )
+                .column
+                    span#target-user(style="vertical-align: middle;font-size:30px;margin-right:30px")
+                        | #{userData.userName}
+                    if userData.userName !== user.userName
+                        if userData.isFollowing
+                            button#follow-btn.medium.ui.basic.button
+                                | 팔로잉
+                        else    
+                            button#follow-btn.medium.ui.primary.button
+                                | 팔로우
+            .row(style="margin-top:50px" )
+                .column(style="font-size:20px;text-align:center")
+                    span(style="margin-right:30px")
+                        | 게시물 #{userData.posts.length}
+                    span#followers-count(style="margin-right:30px;cursor:pointer")
+                        | 팔로워 #{userData.followersCount}
+                    include follower-list
+                    span#followings-count(style="margin-right:30px;cursor:pointer")
+                        | 팔로우 #{userData.followingsCount}
+                    include following-list
+
+script(src='/javascripts/profile.js')
