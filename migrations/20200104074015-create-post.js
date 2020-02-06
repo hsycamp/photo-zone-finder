@@ -15,11 +15,6 @@ module.exports = {
       text: {
         type: Sequelize.TEXT
       },
-      likes: {
-        allowNull: false,
-        type: Sequelize.INTEGER(5),
-        defaultValue: '0'
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
