@@ -16,7 +16,7 @@ block content
           span 업로드
   
   .ui.three.column.grid(style="width: 70%;padding-top:100px;margin: 0 auto")
-    if userData.posts
+    if userData.posts.length
       for post in userData.posts
         .column
           include card
