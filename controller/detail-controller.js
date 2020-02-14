@@ -85,27 +85,9 @@ const detailController = {
 
   getLikers: async (req, res) => {
     const postId = req.params.postId;
-    const post = await db.Post.findOne({
-      attributes: [],
-      where: { id: postId },
-      include: [
-        {
-          model: db.User,
-          as: "liker",
-          attributes: ["userName"],
-          include: [
-            {
-              model: db.User,
-              as: "followers",
-              attributes: ["userName"],
-              where: { id: req.user._id },
-              required: false
-            }
-          ]
-        }
-      ]
-    });
-    return res.json(post.liker);
+    const userObjectId = req.user._id;
+    const likers = await db.Post.getLikers(postId, userObjectId, db);
+    return res.json(likers);
   }
 };
 

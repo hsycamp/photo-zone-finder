@@ -88,5 +88,29 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
+  Post.getLikers = async function(postId, userObjectId, db) {
+    const post = await this.findOne({
+      attributes: [],
+      where: { id: postId },
+      include: [
+        {
+          model: db.User,
+          as: "liker",
+          attributes: ["userName"],
+          include: [
+            {
+              model: db.User,
+              as: "followers",
+              attributes: ["userName"],
+              where: { id: userObjectId },
+              required: false
+            }
+          ]
+        }
+      ]
+    });
+    return post.liker;
+  };
+
   return Post;
 };
