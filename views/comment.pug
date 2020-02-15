@@ -1,18 +1,18 @@
 
 .ui.comments
-    if post[0]["Comments.id"]
-        for comment in post
-            .comment(id=comment["Comments.id"])
+    if post.Comments.length
+        for comment in post.Comments
+            .comment(id=comment.id)
                 a.avatar
                     img(src='/images/avatar.png')
                 .content
-                    a.author(href=`/user-page/${comment["Comments.User.userName"]}`)
-                        | #{comment["Comments.User.userName"]}
+                    a.author(href=`/user-page/${comment.User.userName}`)
+                        | #{comment.User.userName}
                     span.right.floated   
-                        if comment["Comments.User.id"] === user._id
+                        if comment.User.id === user._id
                             i#comment-delete-btn.trash.icon(style="cursor:pointer")
                     .text
-                        | #{comment["Comments.text"]}
+                        | #{comment.text}
                     #published-date(style="color:#A2A2A2;font-size:12px;")
-                        | #{moment(comment["Comments.createdAt"]).fromNow()}
+                        | #{moment(comment.createdAt).fromNow()}
                         

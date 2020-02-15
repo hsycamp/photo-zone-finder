@@ -50,23 +50,28 @@ module.exports = (sequelize, DataTypes) => {
     return allPosts;
   };
 
-  Post.getPostWithCommentsByPostId = async function(postId, db) {
-    const post = await this.findAll({
-      raw: true,
+  Post.getPostByPostId = async function(postId, db) {
+    const post = await this.findOne({
       where: { id: postId },
       include: [
         { model: db.User, attributes: ["id", "userName"] },
         {
           model: db.Comment,
           attributes: ["id", "text", "createdAt"],
-          include: [{ model: db.User, attributes: ["userName"] }]
+          include: [{ model: db.User, attributes: ["id", "userName"] }]
+        },
+        {
+          model: db.User,
+          as: "liker",
+          attributes: ["id"]
         }
       ]
     });
+
     return post;
   };
 
-  Post.getPostByPostId = async function(postId) {
+  Post.getPostText = async function(postId) {
     const post = await this.findOne({
       where: { id: postId }
     });

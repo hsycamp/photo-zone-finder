@@ -2,33 +2,23 @@ const db = require("../mysql-models");
 
 const detailController = {
   getDetailPage: async (req, res) => {
-    const userObjectId = req.user._id;
     const postId = req.params.postId;
-    const postWithComments = await db.Post.getPostWithCommentsByPostId(
-      postId,
-      db
-    );
-    const post = await db.Post.findOne({ where: { id: postId } });
-    const isLiker = await post.getLiker({
-      where: { id: userObjectId },
-      attributes: ["userName"]
-    });
-    req.user.islikedPost = isLiker.length === 1;
+    const post = await db.Post.getPostByPostId(postId, db);
 
-    const likers = await post.getLiker({
-      attributes: ["userName"]
-    });
+    const isLiker =
+      post.liker.filter(liker => liker.id === req.user._id).length !== 0;
+    req.user.islikedPost = isLiker;
 
     res.render("detail-page", {
       user: req.user,
-      post: postWithComments,
-      likersCount: likers.length
+      post,
+      likersCount: post.liker.length
     });
   },
 
   getUpdatePage: async (req, res) => {
     const postId = req.params.postId;
-    const post = await db.Post.getPostByPostId(postId);
+    const post = await db.Post.getPostText(postId);
     const text = post.text;
     res.render("post-update", {
       user: req.user,

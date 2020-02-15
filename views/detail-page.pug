@@ -7,19 +7,19 @@ block content
   .ui.middle.aligned.center.aligned.grid(style="margin-top:100px")
     .ui.container(style="width:1000px")
       .image(style="width:65%;height:100%;float:left;margin-right:1%")
-        img.ui.big.image(src=`${post[0].content}`,style="width:100%")
+        img.ui.big.image(src=`${post.content}`,style="width:100%")
       .ui.card(style="margin-top:0;width:34%;height:600px;float:left")
         .content(style="height:10%")
           img.ui.avatar.image(src="/images/avatar.png")
-          a(href=`/user-page/${post[0]["User.userName"]}`, style="color: #000;")
-            | #{post[0]["User.userName"]}
+          a(href=`/user-page/${post.User.userName}`, style="color: #000;")
+            | #{post.User.userName}
           span.right.floated
-            if post[0].publisherId === user._id
+            if post.publisherId === user._id
               i#post-update-btn.edit.icon(style="cursor:pointer")
               i#post-delete-btn.trash.icon(style="cursor:pointer")
-            .right.floated.meta #{moment(post[0].createdAt).fromNow()}
+            .right.floated.meta #{moment(post.createdAt).fromNow()}
         .content(style="height:20%;overflow:auto;white-space:pre;")
-          | #{post[0].text}
+          | #{post.text}
         .content(style="height:50%;overflow:auto")
           include comment
         .content(style="height:10%")
